@@ -120,11 +120,29 @@ async function updateInlayHintDecorations(editor: vscode.TextEditor) {
     const alignColumn = config.get<number>("inlayHints.position", 40);
     const minPadding = config.get<number>("inlayHints.minimumPadding", 2);
 
+    // Group hints by line number, preserving order
+    const hintsByLine = new Map<number, string[]>();
+    for (const hint of hints) {
+      const lineNum = (hint.position as { line: number }).line;
+
+      let labelText: string;
+      if (typeof hint.label === "string") {
+        labelText = hint.label;
+      } else if (Array.isArray(hint.label) && hint.label.length > 0) {
+        labelText = hint.label.map((part: { value: string }) => part.value).join("");
+      } else {
+        continue;
+      }
+
+      const existing = hintsByLine.get(lineNum) || [];
+      existing.push(labelText);
+      hintsByLine.set(lineNum, existing);
+    }
+
     const decorations: vscode.DecorationOptions[] = [];
 
-    for (const hint of hints) {
-      const pos = hint.position as { line: number; character: number };
-      const line = document.lineAt(pos.line);
+    for (const [lineNum, labelTexts] of hintsByLine) {
+      const line = document.lineAt(lineNum);
       const lineLength = line.text.length;
 
       // Calculate margin for alignment
@@ -135,21 +153,14 @@ async function updateInlayHintDecorations(editor: vscode.TextEditor) {
         marginChars = minPadding;
       }
 
-      // Extract label text
-      let labelText: string;
-      if (typeof hint.label === "string") {
-        labelText = hint.label;
-      } else if (Array.isArray(hint.label) && hint.label.length > 0) {
-        labelText = hint.label.map((part: { value: string }) => part.value).join("");
-      } else {
-        continue;
-      }
+      // Concatenate multiple hints as sentences, prefixed with # to look like a comment
+      const combinedText = "# " + labelTexts.join(" ");
 
       const decoration: vscode.DecorationOptions = {
-        range: new vscode.Range(pos.line, lineLength, pos.line, lineLength),
+        range: new vscode.Range(lineNum, lineLength, lineNum, lineLength),
         renderOptions: {
           after: {
-            contentText: labelText,
+            contentText: combinedText,
             color: new vscode.ThemeColor("editorInlayHint.foreground"),
             backgroundColor: "transparent",
             fontStyle: "normal",
