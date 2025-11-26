@@ -8,10 +8,10 @@ const TEMP_STDLIB_PATH = "/tmp/masm-lsp-test-stdlib";
 
 function cloneMidenVm(): void {
   if (fs.existsSync(TEMP_STDLIB_PATH)) {
-    console.log(`Removing existing ${TEMP_STDLIB_PATH}...`);
+    console.log(`Removing existing ${TEMP_STDLIB_PATH}`);
     fs.rmSync(TEMP_STDLIB_PATH, { recursive: true, force: true });
   }
-  console.log(`Cloning miden-vm to ${TEMP_STDLIB_PATH}...`);
+  console.log(`Cloning miden-vm to ${TEMP_STDLIB_PATH}`);
   execSync(`git clone --depth 1 ${MIDEN_VM_REPO} ${TEMP_STDLIB_PATH}`, {
     stdio: "inherit",
   });
@@ -19,7 +19,7 @@ function cloneMidenVm(): void {
 
 function cleanupMidenVm(): void {
   if (fs.existsSync(TEMP_STDLIB_PATH)) {
-    console.log(`Cleaning up ${TEMP_STDLIB_PATH}...`);
+    console.log(`Cleaning up ${TEMP_STDLIB_PATH}`);
     fs.rmSync(TEMP_STDLIB_PATH, { recursive: true, force: true });
   }
 }

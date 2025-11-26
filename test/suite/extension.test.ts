@@ -48,7 +48,8 @@ function decodeSemanticTokens(
     const tokenTypeIndex = tokens.data[i + 3];
 
     currentLine += deltaLine;
-    currentChar = deltaLine === 0 ? currentChar + deltaStartChar : deltaStartChar;
+    currentChar =
+      deltaLine === 0 ? currentChar + deltaStartChar : deltaStartChar;
 
     const lineText = lines[currentLine] || "";
     const text = lineText.substring(currentChar, currentChar + length);
@@ -66,12 +67,18 @@ function decodeSemanticTokens(
 }
 
 // Helper to find tokens by type
-function findTokensByType(tokens: DecodedToken[], type: string): DecodedToken[] {
+function findTokensByType(
+  tokens: DecodedToken[],
+  type: string
+): DecodedToken[] {
   return tokens.filter((t) => t.tokenType === type);
 }
 
 // Helper to find token containing specific text
-function findTokenByText(tokens: DecodedToken[], text: string): DecodedToken | undefined {
+function findTokenByText(
+  tokens: DecodedToken[],
+  text: string
+): DecodedToken | undefined {
   return tokens.find((t) => t.text === text);
 }
 
@@ -151,10 +158,18 @@ suite("Semantic Token Type Verification", () => {
     const tokens = await getDecodedTokens(content);
 
     const commentTokens = findTokensByType(tokens, "comment");
-    assert.ok(commentTokens.length > 0, "Should have at least one comment token");
+    assert.ok(
+      commentTokens.length > 0,
+      "Should have at least one comment token"
+    );
 
-    const commentToken = commentTokens.find((t) => t.text.includes("This is a comment"));
-    assert.ok(commentToken, "The comment text should be tokenized as a comment");
+    const commentToken = commentTokens.find((t) =>
+      t.text.includes("This is a comment")
+    );
+    assert.ok(
+      commentToken,
+      "The comment text should be tokenized as a comment"
+    );
   });
 
   test("Keywords 'begin' and 'end' should be tokenized as 'keyword' type", async function () {
@@ -166,10 +181,11 @@ suite("Semantic Token Type Verification", () => {
     await vscode.window.showTextDocument(document);
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    const rawTokens = await vscode.commands.executeCommand<vscode.SemanticTokens>(
-      "vscode.provideDocumentSemanticTokens",
-      document.uri
-    );
+    const rawTokens =
+      await vscode.commands.executeCommand<vscode.SemanticTokens>(
+        "vscode.provideDocumentSemanticTokens",
+        document.uri
+      );
     assert.ok(rawTokens, "Tokens should be returned");
     const tokens = decodeSemanticTokens(rawTokens, document.getText());
 
@@ -188,7 +204,9 @@ suite("Semantic Token Type Verification", () => {
     // The file contains multiple keyword instructions
     assert.ok(
       keywords.length >= 5,
-      `Should have at least 5 keyword tokens. Found: ${JSON.stringify(keywords)}`
+      `Should have at least 5 keyword tokens. Found: ${JSON.stringify(
+        keywords
+      )}`
     );
   });
 
@@ -200,7 +218,11 @@ suite("Semantic Token Type Verification", () => {
 
     const procToken = findTokenByText(tokens, "my_procedure");
     assert.ok(procToken, "Procedure name 'my_procedure' should be tokenized");
-    assert.strictEqual(procToken?.tokenType, "function", "Procedure name should be a function");
+    assert.strictEqual(
+      procToken?.tokenType,
+      "function",
+      "Procedure name should be a function"
+    );
   });
 
   test("Constants should be tokenized as 'variable' with readonly modifier", async function () {
@@ -211,7 +233,11 @@ suite("Semantic Token Type Verification", () => {
 
     const constToken = findTokenByText(tokens, "MY_CONST");
     assert.ok(constToken, "Constant 'MY_CONST' should be tokenized");
-    assert.strictEqual(constToken?.tokenType, "variable", "Constant should be tokenized as variable");
+    assert.strictEqual(
+      constToken?.tokenType,
+      "variable",
+      "Constant should be tokenized as variable"
+    );
   });
 
   test("Numeric literals should be tokenized as 'number' type", async function () {
@@ -223,10 +249,11 @@ suite("Semantic Token Type Verification", () => {
     await vscode.window.showTextDocument(document);
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    const rawTokens = await vscode.commands.executeCommand<vscode.SemanticTokens>(
-      "vscode.provideDocumentSemanticTokens",
-      document.uri
-    );
+    const rawTokens =
+      await vscode.commands.executeCommand<vscode.SemanticTokens>(
+        "vscode.provideDocumentSemanticTokens",
+        document.uri
+      );
     assert.ok(rawTokens, "Tokens should be returned");
     const tokens = decodeSemanticTokens(rawTokens, document.getText());
 
@@ -234,7 +261,9 @@ suite("Semantic Token Type Verification", () => {
     const numberTokens = findTokensByType(tokens, "number");
     assert.ok(
       numberTokens.length > 0,
-      `Should have number tokens. All tokens: ${JSON.stringify(tokens.map((t) => ({ text: t.text, type: t.tokenType })))}`
+      `Should have number tokens. All tokens: ${JSON.stringify(
+        tokens.map((t) => ({ text: t.text, type: t.tokenType }))
+      )}`
     );
   });
 
@@ -248,7 +277,9 @@ suite("Semantic Token Type Verification", () => {
     const decoratorTokens = findTokensByType(tokens, "decorator");
     assert.ok(
       decoratorTokens.length > 0,
-      `Should have decorator tokens. All tokens: ${JSON.stringify(tokens.map((t) => ({ text: t.text, type: t.tokenType })))}`
+      `Should have decorator tokens. All tokens: ${JSON.stringify(
+        tokens.map((t) => ({ text: t.text, type: t.tokenType }))
+      )}`
     );
   });
 
@@ -261,10 +292,11 @@ suite("Semantic Token Type Verification", () => {
     await vscode.window.showTextDocument(document);
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    const rawTokens = await vscode.commands.executeCommand<vscode.SemanticTokens>(
-      "vscode.provideDocumentSemanticTokens",
-      document.uri
-    );
+    const rawTokens =
+      await vscode.commands.executeCommand<vscode.SemanticTokens>(
+        "vscode.provideDocumentSemanticTokens",
+        document.uri
+      );
     assert.ok(rawTokens, "Tokens should be returned");
     const tokens = decodeSemanticTokens(rawTokens, document.getText());
 
@@ -273,14 +305,18 @@ suite("Semantic Token Type Verification", () => {
     const namespaceTokens = findTokensByType(tokens, "namespace");
     assert.ok(
       namespaceTokens.length > 0,
-      `Import alias should be tokenized as namespace. Found types: ${[...new Set(tokens.map((t) => t.tokenType))]}`
+      `Import alias should be tokenized as namespace. Found types: ${[
+        ...new Set(tokens.map((t) => t.tokenType)),
+      ]}`
     );
 
     // Verify the alias name is among the namespace tokens
     const namespaceTexts = namespaceTokens.map((t) => t.text);
     assert.ok(
       namespaceTexts.includes("smt_alias"),
-      `'smt_alias' should be tokenized as namespace. Found: ${JSON.stringify(namespaceTexts)}`
+      `'smt_alias' should be tokenized as namespace. Found: ${JSON.stringify(
+        namespaceTexts
+      )}`
     );
   });
 
@@ -293,10 +329,11 @@ suite("Semantic Token Type Verification", () => {
     await vscode.window.showTextDocument(document);
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    const rawTokens = await vscode.commands.executeCommand<vscode.SemanticTokens>(
-      "vscode.provideDocumentSemanticTokens",
-      document.uri
-    );
+    const rawTokens =
+      await vscode.commands.executeCommand<vscode.SemanticTokens>(
+        "vscode.provideDocumentSemanticTokens",
+        document.uri
+      );
     assert.ok(rawTokens, "Tokens should be returned");
     const tokens = decodeSemanticTokens(rawTokens, document.getText());
 
@@ -343,8 +380,8 @@ suite("Inlay Hints Commands", () => {
 
     const commands = await vscode.commands.getCommands(true);
     assert.ok(
-      commands.includes("masm.setInlayHintsPadding"),
-      "masm.setInlayHintsPadding command should be registered"
+      commands.includes("masm.setInlayHintsPosition"),
+      "masm.setInlayHintsPosition command should be registered"
     );
   });
 
@@ -379,23 +416,27 @@ suite("Inlay Hints Commands", () => {
     await vscode.commands.executeCommand("masm.toggleInlayHints");
   });
 
-  test("Set inlay hints padding command should update masm-lsp.inlayHints.minimumPadding", async function () {
+  test("Set inlay hints position command should update masm-lsp.inlayHints.alignPosition", async function () {
     this.timeout(15000);
 
     const config = vscode.workspace.getConfiguration("masm-lsp");
 
     // Get initial value
-    const initialValue = config.get<number>("inlayHints.minimumPadding", 2);
+    const initialValue = config.get<number>("inlayHints.alignPosition", 40);
 
     // Execute the command - this opens an input box
-    const commandPromise = vscode.commands.executeCommand("masm.setInlayHintsPadding");
+    const commandPromise = vscode.commands.executeCommand(
+      "masm.setInlayHintsPosition"
+    );
 
     // Wait for the input box to appear
     await new Promise((resolve) => setTimeout(resolve, 300));
 
     // Accept the input box with the default (current) value
     // Note: We can't programmatically type into VS Code's QuickInput widget in extension tests
-    await vscode.commands.executeCommand("workbench.action.acceptSelectedQuickOpenItem");
+    await vscode.commands.executeCommand(
+      "workbench.action.acceptSelectedQuickOpenItem"
+    );
 
     // Wait for the command to complete
     await commandPromise;
@@ -405,7 +446,7 @@ suite("Inlay Hints Commands", () => {
 
     // Verify the setting still has a valid value (command executed successfully)
     const updatedConfig = vscode.workspace.getConfiguration("masm-lsp");
-    const newValue = updatedConfig.get<number>("inlayHints.minimumPadding");
+    const newValue = updatedConfig.get<number>("inlayHints.alignPosition");
 
     // The value should be the same as the initial value since we accepted the default
     assert.strictEqual(
@@ -467,7 +508,11 @@ suite("Semantic Token Edge Cases", () => {
     this.timeout(30000);
 
     const tokens = await getDecodedTokens("");
-    assert.strictEqual(tokens.length, 0, "Empty document should produce no tokens");
+    assert.strictEqual(
+      tokens.length,
+      0,
+      "Empty document should produce no tokens"
+    );
   });
 
   test("Simple fixture file should have correct token types", async function () {
@@ -479,24 +524,33 @@ suite("Semantic Token Edge Cases", () => {
     await vscode.window.showTextDocument(document);
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    const rawTokens = await vscode.commands.executeCommand<vscode.SemanticTokens>(
-      "vscode.provideDocumentSemanticTokens",
-      document.uri
-    );
+    const rawTokens =
+      await vscode.commands.executeCommand<vscode.SemanticTokens>(
+        "vscode.provideDocumentSemanticTokens",
+        document.uri
+      );
     assert.ok(rawTokens, "Tokens should be returned");
     const tokens = decodeSemanticTokens(rawTokens, document.getText());
 
     // Verify comment tokens exist
     const commentTokens = findTokensByType(tokens, "comment");
-    assert.ok(commentTokens.length >= 2, "Should have comment tokens (regular and doc)");
+    assert.ok(
+      commentTokens.length >= 2,
+      "Should have comment tokens (regular and doc)"
+    );
 
     // Verify function tokens (my_function, helper_function)
     const functionTokens = findTokensByType(tokens, "function");
-    assert.ok(functionTokens.length >= 2, "Should have function tokens for procedure names");
+    assert.ok(
+      functionTokens.length >= 2,
+      "Should have function tokens for procedure names"
+    );
     const functionNames = functionTokens.map((t) => t.text);
     assert.ok(
       functionNames.includes("my_function"),
-      `'my_function' should be tokenized as function. Found: ${JSON.stringify(functionNames)}`
+      `'my_function' should be tokenized as function. Found: ${JSON.stringify(
+        functionNames
+      )}`
     );
 
     // Verify keyword tokens (begin, end, export, proc, etc.)
@@ -513,10 +567,11 @@ suite("Semantic Token Edge Cases", () => {
     await vscode.window.showTextDocument(document);
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    const rawTokens = await vscode.commands.executeCommand<vscode.SemanticTokens>(
-      "vscode.provideDocumentSemanticTokens",
-      document.uri
-    );
+    const rawTokens =
+      await vscode.commands.executeCommand<vscode.SemanticTokens>(
+        "vscode.provideDocumentSemanticTokens",
+        document.uri
+      );
     assert.ok(rawTokens, "Tokens should be returned");
     const tokens = decodeSemanticTokens(rawTokens, document.getText());
 
@@ -524,7 +579,9 @@ suite("Semantic Token Edge Cases", () => {
     const decoratorTokens = findTokensByType(tokens, "decorator");
     assert.ok(
       decoratorTokens.length > 0,
-      `Should have decorator tokens for @inline/@test. Found types: ${[...new Set(tokens.map((t) => t.tokenType))]}`
+      `Should have decorator tokens for @inline/@test. Found types: ${[
+        ...new Set(tokens.map((t) => t.tokenType)),
+      ]}`
     );
 
     // Verify namespace tokens (module paths in use statements)
@@ -552,10 +609,11 @@ suite("Semantic Token Edge Cases", () => {
     await vscode.window.showTextDocument(document);
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    const rawTokens = await vscode.commands.executeCommand<vscode.SemanticTokens>(
-      "vscode.provideDocumentSemanticTokens",
-      document.uri
-    );
+    const rawTokens =
+      await vscode.commands.executeCommand<vscode.SemanticTokens>(
+        "vscode.provideDocumentSemanticTokens",
+        document.uri
+      );
     assert.ok(rawTokens, "Tokens should be returned");
     const tokens = decodeSemanticTokens(rawTokens, document.getText());
 

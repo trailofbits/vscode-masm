@@ -44,7 +44,7 @@ async function startClient(context: vscode.ExtensionContext) {
         }
 
         const config = vscode.workspace.getConfiguration("masm-lsp");
-        const alignColumn = config.get<number>("inlayHints.alignColumn", 0);
+        const alignColumn = config.get<number>("inlayHints.alignPosition", 40);
         const minPadding = config.get<number>("inlayHints.minimumPadding", 2);
 
         for (const hint of hints) {
@@ -116,17 +116,20 @@ async function stopClient() {
 }
 
 export async function activate(context: vscode.ExtensionContext) {
+  console.log("[MASM] Activating MASM extension");
+
   // Register tree-sitter based semantic token provider
   semanticTokensProvider = new TreeSitterSemanticTokensProvider(
     context.extensionPath
   );
-  context.subscriptions.push(
-    vscode.languages.registerDocumentSemanticTokensProvider(
-      { language: "masm" },
-      semanticTokensProvider,
-      legend
-    )
+
+  const disposable = vscode.languages.registerDocumentSemanticTokensProvider(
+    { language: "masm" },
+    semanticTokensProvider,
+    legend
   );
+  console.log("[MASM] Semantic tokens provider registered");
+  context.subscriptions.push(disposable);
 
   // Register commands first (before starting LSP client which may fail)
   context.subscriptions.push(
@@ -155,12 +158,12 @@ export async function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("masm.setInlayHintsPadding", async () => {
+    vscode.commands.registerCommand("masm.setInlayHintsPosition", async () => {
       const config = vscode.workspace.getConfiguration("masm-lsp");
-      const currentValue = config.get<number>("inlayHints.minimumPadding", 2);
+      const currentValue = config.get<number>("inlayHints.alignPosition", 40);
       const input = await vscode.window.showInputBox({
-        title: "Set Inlay Hints Padding",
-        prompt: "Enter the minimum number of spaces between code and inlay hints",
+        title: "Set Inlay Hints Position",
+        prompt: "Enter the position of the inlay hints (in characters).",
         value: String(currentValue),
         validateInput: (val) => {
           const num = parseInt(val, 10);
@@ -173,12 +176,12 @@ export async function activate(context: vscode.ExtensionContext) {
       if (input !== undefined) {
         const newValue = parseInt(input, 10);
         await config.update(
-          "inlayHints.minimumPadding",
+          "inlayHints.alignPosition",
           newValue,
           vscode.ConfigurationTarget.Global
         );
         vscode.window.showInformationMessage(
-          `MASM inlay hints padding set to ${newValue}`
+          `MASM inlay hints position set to ${newValue}`
         );
       }
     })
@@ -215,8 +218,8 @@ async function resolveStdlibPath(
   const entered = await vscode.window.showInputBox({
     title: "Miden stdlib location",
     prompt:
-      "Enter the path to the miden-vm repository (containing stdlib), or leave blank to let masm-lsp auto-clone.",
-    placeHolder: "/path/to/miden-vm",
+      "Enter the path to the miden-vm repository, or leave blank for an extension managed location.",
+    placeHolder: "Path to the miden-vm repository",
     ignoreFocusOut: true,
     validateInput: (val) => {
       if (!val.trim()) return null;
@@ -260,7 +263,10 @@ function inferMidenVmRootFromWorkspace(): string | undefined {
   return undefined;
 }
 
-function findAncestorNamed(startPath: string, dirName: string): string | undefined {
+function findAncestorNamed(
+  startPath: string,
+  dirName: string
+): string | undefined {
   let current = path.resolve(startPath);
   const root = path.parse(current).root;
 
