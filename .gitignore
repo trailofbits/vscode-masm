@@ -2,3 +2,7 @@ node_modules
 out
 *.vsix
 npm-debug.log*
+.vscode-test
+
+# Auto-cloned by masm-lsp during tests (should not happen with current setup)
+test/fixtures/masm-lsp

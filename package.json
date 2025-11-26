@@ -68,6 +68,14 @@
       {
         "command": "masm.restartServer",
         "title": "MASM: Restart Language Server"
+      },
+      {
+        "command": "masm.toggleInlayHints",
+        "title": "MASM: Toggle Inlay Hints"
+      },
+      {
+        "command": "masm.setInlayHintsPadding",
+        "title": "MASM: Set Inlay Hints Padding"
       }
     ],
     "languages": [
@@ -124,8 +132,9 @@
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
+    "compile:test": "tsc -p ./test/",
     "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile",
+    "pretest": "npm run compile && npm run compile:test",
     "test": "node ./out/test/runTest.js",
     "lint": "echo \"No lint configured\""
   },

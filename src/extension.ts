@@ -136,6 +136,54 @@ export async function activate(context: vscode.ExtensionContext) {
     })
   );
 
+  context.subscriptions.push(
+    vscode.commands.registerCommand("masm.toggleInlayHints", async () => {
+      const config = vscode.workspace.getConfiguration("editor", {
+        languageId: "masm",
+      });
+      const currentValue = config.get<string>("inlayHints.enabled", "on");
+      const newValue = currentValue === "off" ? "on" : "off";
+      await config.update(
+        "inlayHints.enabled",
+        newValue,
+        vscode.ConfigurationTarget.Global,
+        true // overrideInLanguage
+      );
+      const status = newValue === "on" ? "enabled" : "disabled";
+      vscode.window.showInformationMessage(`MASM inlay hints ${status}`);
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("masm.setInlayHintsPadding", async () => {
+      const config = vscode.workspace.getConfiguration("masm-lsp");
+      const currentValue = config.get<number>("inlayHints.minimumPadding", 2);
+      const input = await vscode.window.showInputBox({
+        title: "Set Inlay Hints Padding",
+        prompt: "Enter the minimum number of spaces between code and inlay hints",
+        value: String(currentValue),
+        validateInput: (val) => {
+          const num = parseInt(val, 10);
+          if (isNaN(num) || num < 0) {
+            return "Please enter a non-negative integer";
+          }
+          return null;
+        },
+      });
+      if (input !== undefined) {
+        const newValue = parseInt(input, 10);
+        await config.update(
+          "inlayHints.minimumPadding",
+          newValue,
+          vscode.ConfigurationTarget.Global
+        );
+        vscode.window.showInformationMessage(
+          `MASM inlay hints padding set to ${newValue}`
+        );
+      }
+    })
+  );
+
   // Start the language server client (may fail if masm-lsp is not available)
   await startClient(context);
 }

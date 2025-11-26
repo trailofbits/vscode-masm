@@ -1,8 +1,16 @@
 import * as path from "path";
+import * as vscode from "vscode";
 import Mocha from "mocha";
 import { glob } from "glob";
 
 export async function run(): Promise<void> {
+  // Configure masm-lsp to use the test stdlib path from environment
+  const stdlibPath = process.env.MASM_LSP_TEST_STDLIB_PATH;
+  if (stdlibPath) {
+    const config = vscode.workspace.getConfiguration("masm-lsp");
+    await config.update("stdlibPath", stdlibPath, vscode.ConfigurationTarget.Global);
+  }
+
   // Create the mocha test
   const mocha = new Mocha({
     ui: "tdd",

@@ -2,8 +2,8 @@ import * as assert from "assert";
 import * as vscode from "vscode";
 import * as path from "path";
 
-// Note: __dirname is out/test/suite when compiled, so we need to go back to src/test/fixtures
-const fixturesPath = path.resolve(__dirname, "../../../src/test/fixtures");
+// Note: __dirname is out/test/suite when compiled
+const fixturesPath = path.resolve(__dirname, "../../../test/fixtures");
 
 // Semantic token types as defined in treeSitterHighlighter.ts
 const TOKEN_TYPES = [
@@ -315,6 +315,141 @@ suite("Semantic Token Type Verification", () => {
     assert.ok(
       keywords.includes("while.true"),
       `'while.true' should be a keyword. Found: ${JSON.stringify(keywords)}`
+    );
+  });
+});
+
+suite("Inlay Hints Commands", () => {
+  suiteSetup(async function () {
+    this.timeout(60000);
+    const filePath = path.join(fixturesPath, "simple.masm");
+    const document = await vscode.workspace.openTextDocument(filePath);
+    await vscode.window.showTextDocument(document);
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+  });
+
+  test("Toggle inlay hints command should be registered", async function () {
+    this.timeout(10000);
+
+    const commands = await vscode.commands.getCommands(true);
+    assert.ok(
+      commands.includes("masm.toggleInlayHints"),
+      "masm.toggleInlayHints command should be registered"
+    );
+  });
+
+  test("Set inlay hints padding command should be registered", async function () {
+    this.timeout(10000);
+
+    const commands = await vscode.commands.getCommands(true);
+    assert.ok(
+      commands.includes("masm.setInlayHintsPadding"),
+      "masm.setInlayHintsPadding command should be registered"
+    );
+  });
+
+  test("Toggle inlay hints command should update editor.inlayHints.enabled for [masm]", async function () {
+    this.timeout(10000);
+
+    const config = vscode.workspace.getConfiguration("editor", {
+      languageId: "masm",
+    });
+
+    // Get initial value
+    const initialValue = config.get<string>("inlayHints.enabled", "on");
+
+    // Execute toggle command
+    await vscode.commands.executeCommand("masm.toggleInlayHints");
+
+    // Get updated value
+    const updatedConfig = vscode.workspace.getConfiguration("editor", {
+      languageId: "masm",
+    });
+    const newValue = updatedConfig.get<string>("inlayHints.enabled");
+
+    // Verify it toggled
+    const expectedValue = initialValue === "off" ? "on" : "off";
+    assert.strictEqual(
+      newValue,
+      expectedValue,
+      `Inlay hints should toggle from '${initialValue}' to '${expectedValue}'`
+    );
+
+    // Toggle back to restore original state
+    await vscode.commands.executeCommand("masm.toggleInlayHints");
+  });
+
+  test("Set inlay hints padding command should update masm-lsp.inlayHints.minimumPadding", async function () {
+    this.timeout(15000);
+
+    const config = vscode.workspace.getConfiguration("masm-lsp");
+
+    // Get initial value
+    const initialValue = config.get<number>("inlayHints.minimumPadding", 2);
+
+    // Execute the command - this opens an input box
+    const commandPromise = vscode.commands.executeCommand("masm.setInlayHintsPadding");
+
+    // Wait for the input box to appear
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
+    // Accept the input box with the default (current) value
+    // Note: We can't programmatically type into VS Code's QuickInput widget in extension tests
+    await vscode.commands.executeCommand("workbench.action.acceptSelectedQuickOpenItem");
+
+    // Wait for the command to complete
+    await commandPromise;
+
+    // Give VSCode time to update the configuration
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    // Verify the setting still has a valid value (command executed successfully)
+    const updatedConfig = vscode.workspace.getConfiguration("masm-lsp");
+    const newValue = updatedConfig.get<number>("inlayHints.minimumPadding");
+
+    // The value should be the same as the initial value since we accepted the default
+    assert.strictEqual(
+      newValue,
+      initialValue,
+      `Padding should remain ${initialValue} when accepting default value`
+    );
+  });
+
+  test("masm-lsp.inlayHints.minimumPadding setting can be updated programmatically", async function () {
+    this.timeout(10000);
+
+    const config = vscode.workspace.getConfiguration("masm-lsp");
+
+    // Get initial value and pick a different test value
+    const initialValue = config.get<number>("inlayHints.minimumPadding", 2);
+    const testValue = initialValue === 5 ? 6 : 5;
+
+    // Update the setting programmatically
+    await config.update(
+      "inlayHints.minimumPadding",
+      testValue,
+      vscode.ConfigurationTarget.Global
+    );
+
+    // Give VSCode time to update the configuration
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    // Get updated value
+    const updatedConfig = vscode.workspace.getConfiguration("masm-lsp");
+    const newValue = updatedConfig.get<number>("inlayHints.minimumPadding");
+
+    // Verify it was updated
+    assert.strictEqual(
+      newValue,
+      testValue,
+      `Padding should be updated from ${initialValue} to ${testValue}`
+    );
+
+    // Restore original value
+    await config.update(
+      "inlayHints.minimumPadding",
+      initialValue,
+      vscode.ConfigurationTarget.Global
     );
   });
 });
