@@ -11,6 +11,11 @@ import {
 
 let client: LanguageClient | undefined;
 
+// Decoration-based inlay hints state
+let inlayHintsEnabled = true;
+const decorationType = vscode.window.createTextEditorDecorationType({});
+const documentDecorations = new Map<string, vscode.DecorationOptions[]>();
+
 async function startClient(context: vscode.ExtensionContext) {
   const config = vscode.workspace.getConfiguration("masm-lsp");
   const serverCommand = config.get<string>("serverPath", "masm-lsp");
@@ -32,45 +37,8 @@ async function startClient(context: vscode.ExtensionContext) {
     outputChannel,
     traceOutputChannel: outputChannel,
     middleware: {
-      provideInlayHints: async (document, range, token, next) => {
-        const hints = await next(document, range, token);
-        if (!hints || hints.length === 0) {
-          return hints;
-        }
-
-        const config = vscode.workspace.getConfiguration("masm-lsp");
-        const alignColumn = config.get<number>("inlayHints.position", 40);
-        const minPadding = config.get<number>("inlayHints.minimumPadding", 2);
-
-        for (const hint of hints) {
-          const pos = hint.position;
-          const line = document.lineAt(pos.line);
-          const lineLength = line.text.length;
-
-          let spacesNeeded: number;
-          if (alignColumn > 0 && lineLength < alignColumn) {
-            // Align to target column
-            spacesNeeded = alignColumn - lineLength;
-          } else {
-            // Use minimum padding
-            spacesNeeded = minPadding;
-          }
-
-          if (spacesNeeded > 0) {
-            const padding = " ".repeat(spacesNeeded);
-            if (typeof hint.label === "string") {
-              hint.label = padding + hint.label;
-            } else if (Array.isArray(hint.label) && hint.label.length > 0) {
-              hint.label[0].value = padding + hint.label[0].value;
-            }
-          }
-
-          hint.paddingLeft = false;
-          hint.paddingRight = false;
-        }
-
-        return hints;
-      },
+      // Suppress native inlay hints - we render them as decorations instead
+      provideInlayHints: async () => [],
     },
   };
 
@@ -110,6 +78,114 @@ async function stopClient() {
   await current.stop();
 }
 
+// Fetch inlay hints from LSP and convert to decorations
+async function updateInlayHintDecorations(editor: vscode.TextEditor) {
+  if (!client || !inlayHintsEnabled) {
+    editor.setDecorations(decorationType, []);
+    return;
+  }
+
+  const document = editor.document;
+  if (document.languageId !== "masm") {
+    return;
+  }
+
+  try {
+    const range = new vscode.Range(
+      0,
+      0,
+      document.lineCount - 1,
+      document.lineAt(document.lineCount - 1).text.length
+    );
+
+    // Request inlay hints from the LSP server
+    const hints = await client.sendRequest<vscode.InlayHint[] | null>(
+      "textDocument/inlayHint",
+      {
+        textDocument: { uri: document.uri.toString() },
+        range: {
+          start: { line: range.start.line, character: range.start.character },
+          end: { line: range.end.line, character: range.end.character },
+        },
+      }
+    );
+
+    if (!hints || hints.length === 0) {
+      editor.setDecorations(decorationType, []);
+      documentDecorations.set(document.uri.toString(), []);
+      return;
+    }
+
+    const config = vscode.workspace.getConfiguration("masm-lsp");
+    const alignColumn = config.get<number>("inlayHints.position", 40);
+    const minPadding = config.get<number>("inlayHints.minimumPadding", 2);
+
+    const decorations: vscode.DecorationOptions[] = [];
+
+    for (const hint of hints) {
+      const pos = hint.position as { line: number; character: number };
+      const line = document.lineAt(pos.line);
+      const lineLength = line.text.length;
+
+      // Calculate margin for alignment
+      let marginChars: number;
+      if (alignColumn > 0 && lineLength < alignColumn) {
+        marginChars = alignColumn - lineLength;
+      } else {
+        marginChars = minPadding;
+      }
+
+      // Extract label text
+      let labelText: string;
+      if (typeof hint.label === "string") {
+        labelText = hint.label;
+      } else if (Array.isArray(hint.label) && hint.label.length > 0) {
+        labelText = hint.label.map((part: { value: string }) => part.value).join("");
+      } else {
+        continue;
+      }
+
+      const decoration: vscode.DecorationOptions = {
+        range: new vscode.Range(pos.line, lineLength, pos.line, lineLength),
+        renderOptions: {
+          after: {
+            contentText: labelText,
+            color: new vscode.ThemeColor("editorInlayHint.foreground"),
+            backgroundColor: "transparent",
+            fontStyle: "normal",
+            margin: `0 0 0 ${marginChars}ch`,
+          },
+        },
+      };
+
+      decorations.push(decoration);
+    }
+
+    editor.setDecorations(decorationType, decorations);
+    documentDecorations.set(document.uri.toString(), decorations);
+  } catch (err) {
+    console.error("[MASM] Failed to fetch inlay hints:", err);
+    editor.setDecorations(decorationType, []);
+  }
+}
+
+// Update decorations for all visible MASM editors
+async function updateAllVisibleEditors() {
+  for (const editor of vscode.window.visibleTextEditors) {
+    if (editor.document.languageId === "masm") {
+      await updateInlayHintDecorations(editor);
+    }
+  }
+}
+
+// Clear all decorations
+function clearAllDecorations() {
+  for (const editor of vscode.window.visibleTextEditors) {
+    editor.setDecorations(decorationType, []);
+  }
+  documentDecorations.clear();
+}
+
 export async function activate(context: vscode.ExtensionContext) {
   console.log("[MASM] Activating MASM extension");
 
@@ -123,18 +199,13 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand("masm.toggleInlayHints", async () => {
-      const config = vscode.workspace.getConfiguration("editor", {
-        languageId: "masm",
-      });
-      const currentValue = config.get<string>("inlayHints.enabled", "on");
-      const newValue = currentValue === "off" ? "on" : "off";
-      await config.update(
-        "inlayHints.enabled",
-        newValue,
-        vscode.ConfigurationTarget.Global,
-        true // overrideInLanguage
-      );
-      const status = newValue === "on" ? "enabled" : "disabled";
+      inlayHintsEnabled = !inlayHintsEnabled;
+      if (inlayHintsEnabled) {
+        await updateAllVisibleEditors();
+      } else {
+        clearAllDecorations();
+      }
+      const status = inlayHintsEnabled ? "enabled" : "disabled";
       vscode.window.showInformationMessage(`MASM inlay hints ${status}`);
     })
   );
@@ -163,28 +234,8 @@ export async function activate(context: vscode.ExtensionContext) {
           vscode.ConfigurationTarget.Global
         );
 
-        // Force refresh inlay hints by toggling the editor setting
-        const editorConfig = vscode.workspace.getConfiguration("editor", {
-          languageId: "masm",
-        });
-        const currentEnabled = editorConfig.get<string>(
-          "inlayHints.enabled",
-          "on"
-        );
-        if (currentEnabled !== "off") {
-          await editorConfig.update(
-            "inlayHints.enabled",
-            "off",
-            vscode.ConfigurationTarget.Global,
-            true
-          );
-          await editorConfig.update(
-            "inlayHints.enabled",
-            currentEnabled,
-            vscode.ConfigurationTarget.Global,
-            true
-          );
-        }
+        // Refresh decorations with new position
+        await updateAllVisibleEditors();
 
         vscode.window.showInformationMessage(
           `MASM inlay hints position set to ${newValue}`
@@ -193,8 +244,60 @@ export async function activate(context: vscode.ExtensionContext) {
     })
   );
 
+  // Set up event listeners for decoration updates
+  let updateTimeout: NodeJS.Timeout | undefined;
+  const debouncedUpdate = (editor: vscode.TextEditor) => {
+    if (updateTimeout) {
+      clearTimeout(updateTimeout);
+    }
+    updateTimeout = setTimeout(() => {
+      updateInlayHintDecorations(editor);
+    }, 100);
+  };
+
+  context.subscriptions.push(
+    vscode.window.onDidChangeActiveTextEditor((editor) => {
+      if (editor && editor.document.languageId === "masm") {
+        updateInlayHintDecorations(editor);
+      }
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.window.onDidChangeVisibleTextEditors((editors) => {
+      for (const editor of editors) {
+        if (editor.document.languageId === "masm") {
+          updateInlayHintDecorations(editor);
+        }
+      }
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.workspace.onDidChangeTextDocument((event) => {
+      if (event.document.languageId !== "masm") {
+        return;
+      }
+      const editor = vscode.window.visibleTextEditors.find(
+        (e) => e.document === event.document
+      );
+      if (editor) {
+        debouncedUpdate(editor);
+      }
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.workspace.onDidCloseTextDocument((document) => {
+      documentDecorations.delete(document.uri.toString());
+    })
+  );
+
   // Start the language server client (may fail if masm-lsp is not available)
   await startClient(context);
+
+  // Initial update for any already-open MASM editors
+  await updateAllVisibleEditors();
 }
 
 export async function deactivate(): Promise<void> {
