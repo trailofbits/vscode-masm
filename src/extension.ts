@@ -8,13 +8,8 @@ import {
   ServerOptions,
   Trace,
 } from "vscode-languageclient/node";
-import {
-  TreeSitterSemanticTokensProvider,
-  legend,
-} from "./treeSitterHighlighter";
 
 let client: LanguageClient | undefined;
-let semanticTokensProvider: TreeSitterSemanticTokensProvider | undefined;
 
 async function startClient(context: vscode.ExtensionContext) {
   const config = vscode.workspace.getConfiguration("masm-lsp");
@@ -118,19 +113,6 @@ async function stopClient() {
 export async function activate(context: vscode.ExtensionContext) {
   console.log("[MASM] Activating MASM extension");
 
-  // Register tree-sitter based semantic token provider
-  semanticTokensProvider = new TreeSitterSemanticTokensProvider(
-    context.extensionPath
-  );
-
-  const disposable = vscode.languages.registerDocumentSemanticTokensProvider(
-    { language: "masm" },
-    semanticTokensProvider,
-    legend
-  );
-  console.log("[MASM] Semantic tokens provider registered");
-  context.subscriptions.push(disposable);
-
   // Register commands first (before starting LSP client which may fail)
   context.subscriptions.push(
     vscode.commands.registerCommand("masm.restartServer", async () => {
@@ -216,7 +198,6 @@ export async function activate(context: vscode.ExtensionContext) {
 }
 
 export async function deactivate(): Promise<void> {
-  semanticTokensProvider?.dispose();
   await stopClient();
 }
 

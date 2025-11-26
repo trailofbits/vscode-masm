@@ -15,8 +15,7 @@
     "resolveJsonModule": true,
     "types": [
       "node",
-      "vscode",
-      "emscripten"
+      "vscode"
     ]
   },
   "include": [

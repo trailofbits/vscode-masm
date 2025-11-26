@@ -91,6 +91,13 @@
         "configuration": "./language-configuration.json"
       }
     ],
+    "grammars": [
+      {
+        "language": "masm",
+        "scopeName": "source.masm",
+        "path": "./syntaxes/masm.tmLanguage.json"
+      }
+    ],
     "configuration": {
       "title": "MASM",
       "properties": {
@@ -139,7 +146,6 @@
     "lint": "echo \"No lint configured\""
   },
   "devDependencies": {
-    "@types/emscripten": "^1.41.5",
     "@types/glob": "^9.0.0",
     "@types/mocha": "^10.0.10",
     "@types/node": "^20.12.11",
@@ -150,7 +156,6 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
-    "vscode-languageclient": "^9.0.1",
-    "web-tree-sitter": "^0.25.3"
+    "vscode-languageclient": "^9.0.1"
   }
 }
