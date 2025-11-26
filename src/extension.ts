@@ -44,7 +44,7 @@ async function startClient(context: vscode.ExtensionContext) {
         }
 
         const config = vscode.workspace.getConfiguration("masm-lsp");
-        const alignColumn = config.get<number>("inlayHints.alignPosition", 40);
+        const alignColumn = config.get<number>("inlayHints.position", 40);
         const minPadding = config.get<number>("inlayHints.minimumPadding", 2);
 
         for (const hint of hints) {
@@ -160,7 +160,7 @@ export async function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand("masm.setInlayHintsPosition", async () => {
       const config = vscode.workspace.getConfiguration("masm-lsp");
-      const currentValue = config.get<number>("inlayHints.alignPosition", 40);
+      const currentValue = config.get<number>("inlayHints.position", 40);
       const input = await vscode.window.showInputBox({
         title: "Set Inlay Hints Position",
         prompt: "Enter the position of the inlay hints (in characters).",
@@ -176,10 +176,34 @@ export async function activate(context: vscode.ExtensionContext) {
       if (input !== undefined) {
         const newValue = parseInt(input, 10);
         await config.update(
-          "inlayHints.alignPosition",
+          "inlayHints.position",
           newValue,
           vscode.ConfigurationTarget.Global
         );
+
+        // Force refresh inlay hints by toggling the editor setting
+        const editorConfig = vscode.workspace.getConfiguration("editor", {
+          languageId: "masm",
+        });
+        const currentEnabled = editorConfig.get<string>(
+          "inlayHints.enabled",
+          "on"
+        );
+        if (currentEnabled !== "off") {
+          await editorConfig.update(
+            "inlayHints.enabled",
+            "off",
+            vscode.ConfigurationTarget.Global,
+            true
+          );
+          await editorConfig.update(
+            "inlayHints.enabled",
+            currentEnabled,
+            vscode.ConfigurationTarget.Global,
+            true
+          );
+        }
+
         vscode.window.showInformationMessage(
           `MASM inlay hints position set to ${newValue}`
         );

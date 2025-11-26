@@ -114,9 +114,9 @@
           "default": "",
           "description": "Absolute path to the miden-vm repository containing the MASM stdlib. If empty, the extension will attempt to infer it from the workspace or prompt you. When omitted entirely, the server will auto-clone a copy."
         },
-        "masm-lsp.inlayHints.alignColumn": {
+        "masm-lsp.inlayHints.position": {
           "type": "number",
-          "default": 0,
+          "default": 40,
           "minimum": 0,
           "description": "Column to align inlay hints to. If 0, hints use minimum padding only. If the line extends past this column, minimum padding is used instead."
         },
