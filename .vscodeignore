@@ -1,0 +1,10 @@
+.git/**
+.gitignore
+tsconfig.json
+src/**
+**/*.map
+*.vsix
+test/**
+tests/**
+README.md
+node_modules/web-tree-sitter/test/**

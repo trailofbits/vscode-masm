@@ -1,0 +1,147 @@
+{
+  "name": "vscode-masm",
+  "displayName": "MASM",
+  "description": "VS Code support for the Miden assembly language (MASM) powered by the masm-lsp language server.",
+  "version": "0.0.1",
+  "publisher": "miden",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "activationEvents": [
+    "onLanguage:masm",
+    "onCommand:masm.restartServer"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "semanticTokenScopes": [
+      {
+        "language": "masm",
+        "scopes": {
+          "comment": [
+            "comment.line.masm"
+          ],
+          "comment.documentation": [
+            "comment.block.documentation.masm"
+          ],
+          "keyword": [
+            "keyword.control.masm",
+            "keyword.other.masm"
+          ],
+          "namespace": [
+            "entity.name.namespace.masm"
+          ],
+          "variable.readonly": [
+            "variable.other.constant.masm"
+          ],
+          "function": [
+            "entity.name.function.masm"
+          ],
+          "method": [
+            "entity.name.function.method.masm"
+          ],
+          "decorator": [
+            "entity.name.function.decorator.masm"
+          ],
+          "property": [
+            "variable.other.property.masm"
+          ],
+          "string": [
+            "string.quoted.double.masm"
+          ],
+          "number": [
+            "constant.numeric.masm"
+          ],
+          "operator": [
+            "keyword.operator.masm"
+          ],
+          "punctuation": [
+            "punctuation.masm"
+          ]
+        }
+      }
+    ],
+    "commands": [
+      {
+        "command": "masm.restartServer",
+        "title": "MASM: Restart Language Server"
+      }
+    ],
+    "languages": [
+      {
+        "id": "masm",
+        "aliases": [
+          "MASM",
+          "masm"
+        ],
+        "extensions": [
+          ".masm"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "configuration": {
+      "title": "MASM",
+      "properties": {
+        "masm-lsp.serverPath": {
+          "type": "string",
+          "default": "masm-lsp",
+          "description": "Path to the masm-lsp binary. Defaults to searching in PATH."
+        },
+        "masm-lsp.trace.server": {
+          "type": "string",
+          "enum": [
+            "off",
+            "messages",
+            "verbose"
+          ],
+          "default": "off",
+          "description": "LSP server trace level."
+        },
+        "masm-lsp.stdlibPath": {
+          "type": "string",
+          "default": "",
+          "description": "Absolute path to the miden-vm repository containing the MASM stdlib. If empty, the extension will attempt to infer it from the workspace or prompt you. When omitted entirely, the server will auto-clone a copy."
+        },
+        "masm-lsp.inlayHints.alignColumn": {
+          "type": "number",
+          "default": 0,
+          "minimum": 0,
+          "description": "Column to align inlay hints to. If 0, hints use minimum padding only. If the line extends past this column, minimum padding is used instead."
+        },
+        "masm-lsp.inlayHints.minimumPadding": {
+          "type": "number",
+          "default": 2,
+          "minimum": 0,
+          "description": "Minimum number of spaces between source code and inlay hints."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile",
+    "test": "node ./out/test/runTest.js",
+    "lint": "echo \"No lint configured\""
+  },
+  "devDependencies": {
+    "@types/emscripten": "^1.41.5",
+    "@types/glob": "^9.0.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^20.12.11",
+    "@types/vscode": "^1.85.0",
+    "@vscode/test-electron": "^2.5.2",
+    "glob": "^13.0.0",
+    "mocha": "^11.7.5",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1",
+    "web-tree-sitter": "^0.25.10"
+  }
+}

@@ -1,0 +1,23 @@
+# This is a comment
+#! This is a doc comment
+
+use.std::math::u64
+
+const.MY_CONSTANT=42
+
+export.my_function
+    push.1 push.2 add
+    dup.0
+    drop
+end
+
+proc.helper_function.2
+    loc_load.0
+    loc_store.1
+end
+
+begin
+    push.100
+    exec.my_function
+    call.helper_function
+end

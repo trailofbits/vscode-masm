@@ -1,0 +1,90 @@
+#! Module documentation
+#! This module demonstrates various MASM features
+
+use.std::crypto::hashes
+use.std::collections::smt->smt_alias
+
+const.ZERO=0
+const.MAX_VALUE=0xFFFFFFFF
+const.COMPUTED=10 + 20 * 3
+
+@inline
+export.hash_values
+    # Stack operations
+    padw
+    swap
+    dup.0 dup.1 dup.2
+    movup.3
+    movdn.4
+
+    # Memory operations
+    mem_load.0x1000
+    mem_store.0x2000
+    mem_loadw
+    mem_storew
+
+    # Control flow
+    if.true
+        push.1
+        assert
+    else
+        push.0
+        assertz
+    end
+
+    while.true
+        dup.0
+        neq.0
+        drop
+    end
+
+    repeat.10
+        nop
+    end
+
+    # Arithmetic
+    add.5
+    sub.3
+    mul
+    div.2
+
+    # u32 operations
+    u32and
+    u32or
+    u32xor
+    u32shl.4
+    u32shr.8
+
+    # Crypto operations
+    hash
+    hperm
+    hmerge
+end
+
+@test
+proc.internal_helper
+    # Local variables
+    locaddr.0
+    loc_load.0
+    loc_store.0
+
+    # Assertions with error messages
+    assert.err="Value must be non-zero"
+    assert_eq.err="Values must match"
+
+    # Debug operations
+    debug.stack.16
+    debug.mem.0.100
+
+    # Events
+    emit.42
+    trace.1
+end
+
+begin
+    push.1 push.2 push.3 push.4
+    exec.hash_values
+    syscall.some_syscall
+    dyncall
+    dynexec
+end
