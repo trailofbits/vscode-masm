@@ -36,6 +36,9 @@ async function startClient(context: vscode.ExtensionContext) {
     documentSelector: [{ scheme: "file", language: "masm" }],
     outputChannel,
     traceOutputChannel: outputChannel,
+    synchronize: {
+      configurationSection: "masm-lsp",
+    },
     middleware: {
       // Suppress native inlay hints - we render them as decorations instead
       provideInlayHints: async () => [],
@@ -76,6 +79,24 @@ async function stopClient() {
   const current = client;
   client = undefined;
   await current.stop();
+}
+
+// Manually send configuration to the server
+async function sendConfiguration() {
+  if (!client) return;
+
+  const config = vscode.workspace.getConfiguration("masm-lsp");
+  const settings = {
+    "masm-lsp": {
+      inlayHints: {
+        description: config.get<boolean>("inlayHints.description", false),
+      },
+    },
+  };
+
+  await client.sendNotification("workspace/didChangeConfiguration", {
+    settings,
+  });
 }
 
 // Fetch inlay hints from LSP and convert to decorations
@@ -154,7 +175,8 @@ async function updateInlayHintDecorations(editor: vscode.TextEditor) {
       }
 
       // Concatenate multiple hints as sentences, prefixed with # to look like a comment
-      const combinedText = "# " + labelTexts.join(" ");
+      // Replace spaces with non-breaking spaces to preserve indentation in CSS rendering
+      const combinedText = ("# " + labelTexts.join(" ")).replace(/ /g, "\u00A0");
 
       const decoration: vscode.DecorationOptions = {
         range: new vscode.Range(lineNum, lineLength, lineNum, lineLength),
@@ -255,6 +277,32 @@ export async function activate(context: vscode.ExtensionContext) {
     })
   );
 
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "masm.toggleInlayHintDescriptions",
+      async () => {
+        const config = vscode.workspace.getConfiguration("masm-lsp");
+        const currentValue = config.get<boolean>("inlayHints.description", false);
+        await config.update(
+          "inlayHints.description",
+          !currentValue,
+          vscode.ConfigurationTarget.Global
+        );
+
+        // Manually send configuration to ensure server receives it
+        await sendConfiguration();
+
+        // Refresh decorations with new hint type
+        await updateAllVisibleEditors();
+
+        const status = !currentValue ? "descriptions" : "disassembly";
+        vscode.window.showInformationMessage(
+          `MASM inlay hints now showing ${status}`
+        );
+      }
+    )
+  );
+
   // Set up event listeners for decoration updates
   let updateTimeout: NodeJS.Timeout | undefined;
   const debouncedUpdate = (editor: vscode.TextEditor) => {
@@ -306,6 +354,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
   // Start the language server client (may fail if masm-lsp is not available)
   await startClient(context);
+
+  // Send initial configuration to the server
+  await sendConfiguration();
 
   // Initial update for any already-open MASM editors
   await updateAllVisibleEditors();

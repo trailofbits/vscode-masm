@@ -1,5 +1,9 @@
 {
   "name": "vscode-masm",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/trailofbits/vscode-masm.git"
+  },
   "displayName": "MASM",
   "description": "VS Code support for the Miden assembly language (MASM) powered by the masm-lsp language server.",
   "version": "0.0.1",
@@ -76,6 +80,10 @@
       {
         "command": "masm.setInlayHintsPosition",
         "title": "MASM: Set Inlay Hints Position"
+      },
+      {
+        "command": "masm.toggleInlayHintDescriptions",
+        "title": "MASM: Toggle Inlay Hint Type"
       }
     ],
     "languages": [
@@ -132,6 +140,11 @@
           "default": 2,
           "minimum": 0,
           "description": "Minimum number of spaces between source code and inlay hints."
+        },
+        "masm-lsp.inlayHints.description": {
+          "type": "boolean",
+          "default": false,
+          "description": "Show instruction descriptions instead of disassembly in inlay hints."
         }
       }
     }
