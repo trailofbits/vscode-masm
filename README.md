@@ -1,24 +1,51 @@
 # MASM VS Code Extension
 
-VS Code client for the Miden assembly language (MASM) powered by the `masm-lsp` language server.
+VS Code LSP client for the Miden assembly language (MASM) powered by the [`masm-lsp`](https://github.com/trailofbits/masm-lsp) language server.
 
 ## Features
-- LSP: diagnostics, go-to-definition, references, and more via `masm-lsp`.
+
+The extension provides:
+
+- Syntax highlighting for `.masm` files.
+- Inlay hints for MASM instructions.
+  ![Inlay hints example](assets/inlay_hints.png)]
+- Goto symbol definitions and references.
+- Procedure documentation on hover.
+  ![Hover documentation example](assets/on_hover.png)
+
+## Commands
+
+The extension provides the following commands (accessible via the Command Palette):
+
+| Command | Description |
+|---------|-------------|
+| `MASM: Restart Language Server` | Restart the LSP server |
+| `MASM: Toggle Inlay Hints` | Enable or disable inlay hints |
+| `MASM: Set Inlay Hints Position` | Set the column to align inlay hints to |
+| `MASM: Toggle Inlay Hint Type` | Switch between showing descriptions or disassembly |
 
 ## Requirements
+
 - `masm-lsp` binary available on your `PATH` (or configure `masm-lsp.serverPath`).
 - Node.js 18+ for running/building the extension.
 
 ## Development
+
+To build and package the extension, run the following commands:
+
 ```bash
 cd vscode-masm
-npm install
-npm run compile
+npm install      # To install dependencies
+npm run compile  # To compile the extension
+npm run package  # To package the extension into a .vsix file
 ```
 
-Open this folder in VS Code and run the "Launch Extension" task (F5). The extension activates for `.masm` files.
+The resulting `.vsix` file can be installed in VS Code via the "Extensions: Install from VSIX" command.
 
 ### Configuration
+
 - `masm-lsp.serverPath`: absolute path or command name for the LSP binary (defaults to `masm-lsp`).
 - `masm-lsp.trace.server`: LSP trace level (`off`, `messages`, `verbose`).
 - `masm-lsp.stdlibPath`: path to the `miden-vm` repository containing the MASM stdlib. If omitted, the extension will try to infer it from the current workspace; if it cannot, it will prompt once. Leaving it blank lets the server auto-clone a temporary copy.
+- `masm-lsp.inlayHints.position`: column to align inlay hints to. If 0, hints use minimum padding only. If the line extends past this column, minimum padding is used instead.
+- `masm-lsp.inlayHints.minimumPadding`: minimum number of spaces between source code and inlay hints.
