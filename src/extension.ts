@@ -227,6 +227,8 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand("masm.restartServer", async () => {
       await stopClient();
       await startClient(context);
+      await sendConfiguration();
+      await updateAllVisibleEditors();
     })
   );
 
