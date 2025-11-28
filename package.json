@@ -146,7 +146,11 @@
         },
         "masm-lsp.inlayHints.type": {
           "type": "string",
-          "enum": ["decompilation", "description", "none"],
+          "enum": [
+            "decompilation",
+            "description",
+            "none"
+          ],
           "default": "decompilation",
           "description": "Type of inlay hints to show: decompilation, description, or none."
         }
