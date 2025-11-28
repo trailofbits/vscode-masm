@@ -6,6 +6,36 @@ import {
 } from "./decorations";
 
 /**
+ * Helper to toggle a specific inlay hint type on/off.
+ * If the current type matches, turn it off (set to "none").
+ * Otherwise, enable the specified type.
+ */
+async function toggleInlayHintType(targetType: "decompilation" | "description"): Promise<void> {
+  const config = vscode.workspace.getConfiguration("masm-lsp");
+  const currentType = config.get<string>("inlayHints.type", "none");
+
+  const nextType = currentType === targetType ? "none" : targetType;
+
+  await config.update(
+    "inlayHints.type",
+    nextType,
+    vscode.ConfigurationTarget.Global
+  );
+
+  await sendConfiguration();
+
+  if (nextType === "none") {
+    clearAllDecorations();
+  } else {
+    await updateAllVisibleEditors();
+  }
+
+  const label = targetType === "decompilation" ? "Inline decompilation" : "Instruction descriptions";
+  const status = nextType === "none" ? "disabled" : "enabled";
+  vscode.window.showInformationMessage(`${label} ${status}`);
+}
+
+/**
  * Register all extension commands.
  */
 export function registerCommands(
@@ -21,42 +51,24 @@ export function registerCommands(
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("masm.toggleInlayHints", async () => {
-      const config = vscode.workspace.getConfiguration("masm-lsp");
-      const currentType = config.get<string>(
-        "inlayHints.type",
-        "decompilation"
-      );
-
-      // Toggle between none and decompilation
-      const nextType = currentType === "none" ? "decompilation" : "none";
-
-      await config.update(
-        "inlayHints.type",
-        nextType,
-        vscode.ConfigurationTarget.Global
-      );
-
-      await sendConfiguration();
-
-      if (nextType === "none") {
-        clearAllDecorations();
-      } else {
-        await updateAllVisibleEditors();
-      }
-
-      const status = nextType === "none" ? "disabled" : "enabled";
-      vscode.window.showInformationMessage(`MASM inlay hints ${status}`);
+    vscode.commands.registerCommand("masm.toggleInlineDecompilation", async () => {
+      await toggleInlayHintType("decompilation");
     })
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("masm.setInlayHintsPosition", async () => {
+    vscode.commands.registerCommand("masm.toggleInstructionDescriptions", async () => {
+      await toggleInlayHintType("description");
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("masm.setInlineHintsPosition", async () => {
       const config = vscode.workspace.getConfiguration("masm-lsp");
       const currentValue = config.get<number>("inlayHints.position", 40);
       const input = await vscode.window.showInputBox({
-        title: "Set Inlay Hints Position",
-        prompt: "Enter the position of the inlay hints (in characters).",
+        title: "Set Inline Hints Position",
+        prompt: "Enter the column position for inline hints.",
         value: String(currentValue),
         validateInput: (val) => {
           const num = parseInt(val, 10);
@@ -78,54 +90,9 @@ export function registerCommands(
         await updateAllVisibleEditors();
 
         vscode.window.showInformationMessage(
-          `MASM inlay hints position set to ${newValue}`
+          `Inline hints position set to column ${newValue}`
         );
       }
     })
-  );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand(
-      "masm.toggleInlayHintDescriptions",
-      async () => {
-        try {
-          console.log("[MASM] Toggle inlay hint type started");
-          const config = vscode.workspace.getConfiguration("masm-lsp");
-          const currentType = config.get<string>(
-            "inlayHints.type",
-            "decompilation"
-          );
-
-          // Toggle between decompilation and description
-          const nextType =
-            currentType === "description" ? "decompilation" : "description";
-          console.log(`[MASM] Switching from ${currentType} to ${nextType}`);
-
-          await config.update(
-            "inlayHints.type",
-            nextType,
-            vscode.ConfigurationTarget.Global
-          );
-          console.log("[MASM] Config updated");
-
-          // Manually send configuration to ensure server receives it
-          await sendConfiguration();
-          console.log("[MASM] Configuration sent to server");
-
-          // Refresh decorations with new hint type
-          await updateAllVisibleEditors();
-          console.log("[MASM] Decorations updated");
-
-          vscode.window.showInformationMessage(
-            `MASM inlay hints now showing ${nextType}`
-          );
-        } catch (err) {
-          console.error("[MASM] Toggle inlay hint type failed:", err);
-          vscode.window.showErrorMessage(
-            `Failed to toggle inlay hint type: ${err}`
-          );
-        }
-      }
-    )
   );
 }

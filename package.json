@@ -18,9 +18,9 @@
   "activationEvents": [
     "onLanguage:masm",
     "onCommand:masm.restartServer",
-    "onCommand:masm.toggleInlayHints",
-    "onCommand:masm.toggleInlayHintDescriptions",
-    "onCommand:masm.setInlayHintsPosition"
+    "onCommand:masm.toggleInlineDecompilation",
+    "onCommand:masm.toggleInstructionDescriptions",
+    "onCommand:masm.setInlineHintsPosition"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -77,16 +77,16 @@
         "title": "MASM: Restart Language Server"
       },
       {
-        "command": "masm.toggleInlayHints",
-        "title": "MASM: Toggle Inlay Hints"
+        "command": "masm.toggleInlineDecompilation",
+        "title": "MASM: Toggle Inline Decompilation"
       },
       {
-        "command": "masm.setInlayHintsPosition",
-        "title": "MASM: Set Inlay Hints Position"
+        "command": "masm.toggleInstructionDescriptions",
+        "title": "MASM: Toggle Instruction Descriptions"
       },
       {
-        "command": "masm.toggleInlayHintDescriptions",
-        "title": "MASM: Toggle Inlay Hint Type"
+        "command": "masm.setInlineHintsPosition",
+        "title": "MASM: Set Inline Hints Position"
       }
     ],
     "languages": [
@@ -151,7 +151,7 @@
             "description",
             "none"
           ],
-          "default": "decompilation",
+          "default": "none",
           "description": "Type of inlay hints to show: decompilation, description, or none."
         }
       }

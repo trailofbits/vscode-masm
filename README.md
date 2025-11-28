@@ -26,12 +26,12 @@ The extension provides:
 
 The extension provides the following commands (accessible via the Command Palette):
 
-| Command                          | Description                                          |
-| -------------------------------- | ---------------------------------------------------- |
-| `MASM: Restart Language Server`  | Restart the LSP server                               |
-| `MASM: Toggle Inlay Hints`       | Enable or disable inlay hints                        |
-| `MASM: Set Inlay Hints Position` | Set the column to align inlay hints to               |
-| `MASM: Toggle Inlay Hint Type`   | Switch between showing descriptions or decompilation |
+| Command                               | Description                                |
+| ------------------------------------- | ------------------------------------------ |
+| `MASM: Restart Language Server`       | Restart the LSP server                     |
+| `MASM: Toggle Inline Decompilation`   | Enable or disable inline decompilation     |
+| `MASM: Toggle Instruction Descriptions` | Enable or disable instruction descriptions |
+| `MASM: Set Inline Hints Position`     | Set the column to align inline hints to    |
 
 ## Requirements
 
