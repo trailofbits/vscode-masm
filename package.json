@@ -17,7 +17,10 @@
   ],
   "activationEvents": [
     "onLanguage:masm",
-    "onCommand:masm.restartServer"
+    "onCommand:masm.restartServer",
+    "onCommand:masm.toggleInlayHints",
+    "onCommand:masm.toggleInlayHintDescriptions",
+    "onCommand:masm.setInlayHintsPosition"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -141,10 +144,11 @@
           "minimum": 0,
           "description": "Minimum number of spaces between source code and inlay hints."
         },
-        "masm-lsp.inlayHints.description": {
-          "type": "boolean",
-          "default": false,
-          "description": "Show instruction descriptions instead of disassembly in inlay hints."
+        "masm-lsp.inlayHints.type": {
+          "type": "string",
+          "enum": ["decompilation", "description", "none"],
+          "default": "decompilation",
+          "description": "Type of inlay hints to show: decompilation, description, or none."
         }
       }
     }

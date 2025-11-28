@@ -8,7 +8,7 @@ The extension provides:
 
 - Syntax highlighting for `.masm` files.
 - Inlay hints for MASM instructions.
-  ![Inlay hints example](assets/inlay_hints.png)]
+  ![Inlay hints example](assets/inlay_hints.png)
 - Goto symbol definitions and references.
 - Procedure documentation on hover.
   ![Hover documentation example](assets/on_hover.png)
@@ -17,12 +17,12 @@ The extension provides:
 
 The extension provides the following commands (accessible via the Command Palette):
 
-| Command | Description |
-|---------|-------------|
-| `MASM: Restart Language Server` | Restart the LSP server |
-| `MASM: Toggle Inlay Hints` | Enable or disable inlay hints |
-| `MASM: Set Inlay Hints Position` | Set the column to align inlay hints to |
-| `MASM: Toggle Inlay Hint Type` | Switch between showing descriptions or disassembly |
+| Command                          | Description                                          |
+| -------------------------------- | ---------------------------------------------------- |
+| `MASM: Restart Language Server`  | Restart the LSP server                               |
+| `MASM: Toggle Inlay Hints`       | Enable or disable inlay hints                        |
+| `MASM: Set Inlay Hints Position` | Set the column to align inlay hints to               |
+| `MASM: Toggle Inlay Hint Type`   | Switch between showing descriptions or decompilation |
 
 ## Requirements
 
