@@ -7,11 +7,20 @@ VS Code LSP client for the Miden assembly language (MASM) powered by the [`masm-
 The extension provides:
 
 - Syntax highlighting for `.masm` files.
-- Inlay hints for MASM instructions.
-  ![Inlay hints example](assets/inlay_hints.png)
 - Goto symbol definitions and references.
 - Procedure documentation on hover.
-  ![Hover documentation example](assets/on_hover.png)
+  <div style="margin:1em">
+    <img src="assets/hover_documentation.png" alt="Hover documentation example" height="100" />
+  </div>
+- Inline descriptions for all MASM instructions.
+  <div style="margin:1em">
+    <img src="assets/inline_descriptions.png" alt="Inlay hints example" height="100" />
+  </div>
+- Best-effort inline decompilation of procedures.
+  <div style="margin:1em">
+    <img src="assets/inline_decompilation.png" alt="Inline decompilation example" height="100" />
+  </div>
+- Diagnostics for inconsistent stack effects and unvalidated advice use.
 
 ## Commands
 
