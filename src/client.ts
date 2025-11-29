@@ -104,6 +104,14 @@ export async function startClient(
           diagnostics = diagnostics.filter(
             (d) => d.source !== "masm-lsp/decompilation"
           );
+        } else {
+          // Show decompilation diagnostics with blue underline (Information severity)
+          diagnostics = diagnostics.map((d) => {
+            if (d.source === "masm-lsp/decompilation") {
+              return { ...d, severity: vscode.DiagnosticSeverity.Information };
+            }
+            return d;
+          });
         }
 
         next(uri, diagnostics);
