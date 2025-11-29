@@ -20,18 +20,18 @@ The extension provides:
   <div style="margin:1em">
     <img src="assets/inline_decompilation.png" alt="Inline decompilation example" height="250" />
   </div>
-- Diagnostics for inconsistent stack effects and unvalidated advice use.
+- Diagnostics for inconsistent stack effects, uninitialized locals use, and unvalidated advice use.
 
 ## Commands
 
 The extension provides the following commands (accessible via the Command Palette):
 
-| Command                               | Description                                |
-| ------------------------------------- | ------------------------------------------ |
-| `MASM: Restart Language Server`       | Restart the LSP server                     |
-| `MASM: Toggle Inline Decompilation`   | Enable or disable inline decompilation     |
-| `MASM: Toggle Inline Descriptions`    | Enable or disable inline descriptions      |
-| `MASM: Set Inline Hints Position`     | Set the column to align inline hints to    |
+| Command                             | Description                                       |
+| ----------------------------------- | ------------------------------------------------- |
+| `MASM: Restart Language Server`     | Restart the LSP server                            |
+| `MASM: Toggle Inline Decompilation` | Enable or disable inline procedure decompilation  |
+| `MASM: Toggle Inline Descriptions`  | Enable or disable inline instruction descriptions |
+| `MASM: Set Inline Hints Position`   | Set the column to align inline hints to           |
 
 ## Requirements
 
