@@ -11,7 +11,7 @@ export async function updateInlayHintDecorations(
   editor: vscode.TextEditor
 ): Promise<void> {
   const config = vscode.workspace.getConfiguration("masm-lsp");
-  const hintType = config.get<string>("inlayHints.type", "decompilation");
+  const hintType = config.get<string>("inlayHints.type", "none");
   const client = getClient();
 
   if (!client || hintType === "none") {
