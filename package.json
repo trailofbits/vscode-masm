@@ -19,7 +19,7 @@
     "onLanguage:masm",
     "onCommand:masm.restartServer",
     "onCommand:masm.toggleInlineDecompilation",
-    "onCommand:masm.toggleInstructionDescriptions",
+    "onCommand:masm.toggleInlineDescriptions",
     "onCommand:masm.setInlineHintsPosition"
   ],
   "main": "./out/extension.js",
@@ -81,8 +81,8 @@
         "title": "MASM: Toggle Inline Decompilation"
       },
       {
-        "command": "masm.toggleInstructionDescriptions",
-        "title": "MASM: Toggle Instruction Descriptions"
+        "command": "masm.toggleInlineDescriptions",
+        "title": "MASM: Toggle Inline Descriptions"
       },
       {
         "command": "masm.setInlineHintsPosition",

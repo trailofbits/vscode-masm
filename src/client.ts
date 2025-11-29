@@ -94,6 +94,20 @@ export async function startClient(
     middleware: {
       // Suppress native inlay hints - we render them as decorations instead
       provideInlayHints: async () => [],
+      // Filter out decompilation warnings when decompilation is not active
+      handleDiagnostics: (uri, diagnostics, next) => {
+        const config = vscode.workspace.getConfiguration("masm-lsp");
+        const hintType = config.get<string>("inlayHints.type", "none");
+
+        if (hintType !== "decompilation") {
+          // Filter out decompilation failure warnings
+          diagnostics = diagnostics.filter(
+            (d) => d.source !== "masm-lsp/decompilation"
+          );
+        }
+
+        next(uri, diagnostics);
+      },
     },
   };
 
@@ -146,7 +160,7 @@ export async function sendConfiguration(): Promise<void> {
   }
 
   const config = vscode.workspace.getConfiguration("masm-lsp");
-  const hintType = config.get<string>("inlayHints.type", "decompilation");
+  const hintType = config.get<string>("inlayHints.type", "none");
   console.log(`[MASM] sendConfiguration: sending type=${hintType}`);
 
   const settings = {
@@ -160,4 +174,26 @@ export async function sendConfiguration(): Promise<void> {
   await client.sendNotification("workspace/didChangeConfiguration", {
     settings,
   });
+}
+
+/**
+ * Refresh diagnostics for all open MASM documents.
+ * This triggers the server to re-publish diagnostics, which will be filtered by the middleware.
+ */
+export async function refreshDiagnostics(): Promise<void> {
+  if (!client) return;
+
+  // Touch all open MASM documents to trigger diagnostic refresh
+  for (const document of vscode.workspace.textDocuments) {
+    if (document.languageId === "masm") {
+      // Send a no-op change notification to trigger diagnostics refresh
+      await client.sendNotification("textDocument/didChange", {
+        textDocument: {
+          uri: document.uri.toString(),
+          version: document.version,
+        },
+        contentChanges: [],
+      });
+    }
+  }
 }

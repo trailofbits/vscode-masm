@@ -30,7 +30,7 @@ The extension provides the following commands (accessible via the Command Palett
 | ------------------------------------- | ------------------------------------------ |
 | `MASM: Restart Language Server`       | Restart the LSP server                     |
 | `MASM: Toggle Inline Decompilation`   | Enable or disable inline decompilation     |
-| `MASM: Toggle Instruction Descriptions` | Enable or disable instruction descriptions |
+| `MASM: Toggle Inline Descriptions`    | Enable or disable inline descriptions      |
 | `MASM: Set Inline Hints Position`     | Set the column to align inline hints to    |
 
 ## Requirements

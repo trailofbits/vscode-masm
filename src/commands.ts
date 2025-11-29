@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { startClient, stopClient, sendConfiguration } from "./client";
+import { startClient, stopClient, sendConfiguration, refreshDiagnostics } from "./client";
 import {
   updateAllVisibleEditors,
   clearAllDecorations,
@@ -30,7 +30,10 @@ async function toggleInlayHintType(targetType: "decompilation" | "description"):
     await updateAllVisibleEditors();
   }
 
-  const label = targetType === "decompilation" ? "Inline decompilation" : "Instruction descriptions";
+  // Refresh diagnostics to apply filtering based on new setting
+  await refreshDiagnostics();
+
+  const label = targetType === "decompilation" ? "Inline decompilation" : "Inline descriptions";
   const status = nextType === "none" ? "disabled" : "enabled";
   vscode.window.showInformationMessage(`${label} ${status}`);
 }
@@ -57,7 +60,7 @@ export function registerCommands(
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("masm.toggleInstructionDescriptions", async () => {
+    vscode.commands.registerCommand("masm.toggleInlineDescriptions", async () => {
       await toggleInlayHintType("description");
     })
   );
