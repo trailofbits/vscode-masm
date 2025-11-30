@@ -102,11 +102,48 @@
           },
           "patterns": [
             {
+              "comment": "Parameter with direction modifier and pointer type: in a_0: *felt",
+              "match": "\\b(in|out|inout)\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\s*(:)\\s*(\\*)?([a-zA-Z_][a-zA-Z0-9_]*)",
+              "captures": {
+                "1": { "name": "storage.modifier.masm" },
+                "2": { "name": "variable.parameter.masm" },
+                "3": { "name": "punctuation.separator.colon.masm" },
+                "4": { "name": "keyword.operator.pointer.masm" },
+                "5": { "name": "entity.name.type.masm" }
+              }
+            },
+            {
+              "comment": "Parameter with direction modifier, no type: in a_0",
+              "match": "\\b(in|out|inout)\\s+([a-zA-Z_][a-zA-Z0-9_]*)(?!\\s*:)",
+              "captures": {
+                "1": { "name": "storage.modifier.masm" },
+                "2": { "name": "variable.parameter.masm" }
+              }
+            },
+            {
+              "comment": "Parameter with pointer type, no direction: a_0: *felt",
+              "match": "([a-zA-Z_][a-zA-Z0-9_]*)\\s*(:)\\s*(\\*)([a-zA-Z_][a-zA-Z0-9_]*)",
+              "captures": {
+                "1": { "name": "variable.parameter.masm" },
+                "2": { "name": "punctuation.separator.colon.masm" },
+                "3": { "name": "keyword.operator.pointer.masm" },
+                "4": { "name": "entity.name.type.masm" }
+              }
+            },
+            {
+              "comment": "Parameter with type, no direction: a_0: felt",
               "match": "([a-zA-Z_][a-zA-Z0-9_]*)\\s*(:)\\s*([a-zA-Z_][a-zA-Z0-9_]*)",
               "captures": {
                 "1": { "name": "variable.parameter.masm" },
                 "2": { "name": "punctuation.separator.colon.masm" },
                 "3": { "name": "entity.name.type.masm" }
+              }
+            },
+            {
+              "comment": "Standalone parameter name (no type annotation)",
+              "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)\\b(?!\\s*:)",
+              "captures": {
+                "1": { "name": "variable.parameter.masm" }
               }
             },
             {
@@ -123,12 +160,61 @@
           },
           "end": "(?=\\s*(?:#|$|[a-z]))",
           "patterns": [
-            {
-              "name": "entity.name.type.masm",
-              "match": "\\b[a-zA-Z_][a-zA-Z0-9_]*\\b"
-            },
-            { "include": "#punctuation" }
+            { "include": "#return-values" }
           ]
+        }
+      ]
+    },
+    "return-values": {
+      "patterns": [
+        {
+          "comment": "Parenthesized return values: (r_0: felt, r_1: *felt)",
+          "begin": "\\(",
+          "beginCaptures": {
+            "0": { "name": "punctuation.brackets.round.masm" }
+          },
+          "end": "\\)",
+          "endCaptures": {
+            "0": { "name": "punctuation.brackets.round.masm" }
+          },
+          "patterns": [
+            {
+              "comment": "Return value with pointer type: r_0: *felt",
+              "match": "([a-zA-Z_][a-zA-Z0-9_]*)\\s*(:)\\s*(\\*)([a-zA-Z_][a-zA-Z0-9_]*)",
+              "captures": {
+                "1": { "name": "variable.parameter.masm" },
+                "2": { "name": "punctuation.separator.colon.masm" },
+                "3": { "name": "keyword.operator.pointer.masm" },
+                "4": { "name": "entity.name.type.masm" }
+              }
+            },
+            {
+              "comment": "Return value with type: r_0: felt",
+              "match": "([a-zA-Z_][a-zA-Z0-9_]*)\\s*(:)\\s*([a-zA-Z_][a-zA-Z0-9_]*)",
+              "captures": {
+                "1": { "name": "variable.parameter.masm" },
+                "2": { "name": "punctuation.separator.colon.masm" },
+                "3": { "name": "entity.name.type.masm" }
+              }
+            },
+            {
+              "comment": "Question mark for unknown return type",
+              "name": "keyword.operator.unknown.masm",
+              "match": "\\?"
+            },
+            {
+              "name": "punctuation.separator.comma.masm",
+              "match": ","
+            }
+          ]
+        },
+        {
+          "comment": "Single return type (unparenthesized): -> felt or -> *felt",
+          "match": "(\\*)?([a-zA-Z_][a-zA-Z0-9_]*)",
+          "captures": {
+            "1": { "name": "keyword.operator.pointer.masm" },
+            "2": { "name": "entity.name.type.masm" }
+          }
         }
       ]
     },
