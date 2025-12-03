@@ -20,7 +20,8 @@
     "onCommand:masm.restartServer",
     "onCommand:masm.toggleInlineDecompilation",
     "onCommand:masm.toggleInlineDescriptions",
-    "onCommand:masm.setInlineHintsPosition"
+    "onCommand:masm.setInlineHintsPosition",
+    "onCommand:masm.toggleStackEffects"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -87,6 +88,10 @@
       {
         "command": "masm.setInlineHintsPosition",
         "title": "MASM: Set Inline Hints Position"
+      },
+      {
+        "command": "masm.toggleStackEffects",
+        "title": "MASM: Toggle Stack Effects"
       }
     ],
     "languages": [
@@ -153,6 +158,11 @@
           ],
           "default": "none",
           "description": "Type of inlay hints to show: decompilation, description, or none."
+        },
+        "masm-lsp.codeLens.stackEffects": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show stack effects as code lenses above instructions."
         }
       }
     }

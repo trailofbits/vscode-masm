@@ -4,6 +4,7 @@ import {
   updateAllVisibleEditors,
   clearAllDecorations,
 } from "./decorations";
+import { refreshCodeLenses } from "./codelens";
 
 /**
  * Helper to toggle a specific inlay hint type on/off.
@@ -96,6 +97,26 @@ export function registerCommands(
           `Inline hints position set to column ${newValue}`
         );
       }
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("masm.toggleStackEffects", async () => {
+      const config = vscode.workspace.getConfiguration("masm-lsp");
+      const currentValue = config.get<boolean>("codeLens.stackEffects", true);
+      const nextValue = !currentValue;
+
+      await config.update(
+        "codeLens.stackEffects",
+        nextValue,
+        vscode.ConfigurationTarget.Global
+      );
+
+      await sendConfiguration();
+      refreshCodeLenses();
+
+      const status = nextValue ? "enabled" : "disabled";
+      vscode.window.showInformationMessage(`Stack effects ${status}`);
     })
   );
 }

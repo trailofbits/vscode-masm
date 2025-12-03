@@ -94,6 +94,8 @@ export async function startClient(
     middleware: {
       // Suppress native inlay hints - we render them as decorations instead
       provideInlayHints: async () => [],
+      // Suppress native code lenses - we handle them in our custom provider
+      provideCodeLenses: async () => [],
       // Filter out decompilation warnings when decompilation is not active
       handleDiagnostics: (uri, diagnostics, next) => {
         const config = vscode.workspace.getConfiguration("masm-lsp");
@@ -169,12 +171,16 @@ export async function sendConfiguration(): Promise<void> {
 
   const config = vscode.workspace.getConfiguration("masm-lsp");
   const hintType = config.get<string>("inlayHints.type", "none");
-  console.log(`[MASM] sendConfiguration: sending type=${hintType}`);
+  const stackEffectsEnabled = config.get<boolean>("codeLens.stackEffects", true);
+  console.log(`[MASM] sendConfiguration: sending type=${hintType}, stackEffects=${stackEffectsEnabled}`);
 
   const settings = {
     masm: {
       inlayHints: {
         type: hintType,
+      },
+      codeLens: {
+        stackEffects: stackEffectsEnabled,
       },
     },
   };

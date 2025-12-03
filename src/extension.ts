@@ -6,6 +6,7 @@ import {
   updateAllVisibleEditors,
   removeDocumentDecorations,
 } from "./decorations";
+import { registerCodeLensProvider } from "./codelens";
 
 export async function activate(
   context: vscode.ExtensionContext
@@ -14,6 +15,9 @@ export async function activate(
 
   // Register commands first (before starting LSP client which may fail)
   registerCommands(context);
+
+  // Register code lens provider for stack effects
+  registerCodeLensProvider(context);
 
   // Set up event listeners for decoration updates
   let updateTimeout: NodeJS.Timeout | undefined;
