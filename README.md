@@ -8,30 +8,32 @@ The extension provides:
 
 - Syntax highlighting for `.masm` files.
 - Goto symbol definitions and references.
-- Procedure documentation on hover.
+- Constant and procedure documentation on hover (including signatures).
   <div style="margin:1em">
-    <img src="assets/hover_documentation.png" alt="Hover documentation example" height="250" />
+    <img src="assets/signatures.png" alt="Hover documentation example" width="200"/>
   </div>
 - Inline descriptions for all MASM instructions.
   <div style="margin:1em">
-    <img src="assets/inline_descriptions.png" alt="Inlay hints example" height="250" />
+    <img src="assets/descriptions.png" alt="Inlay hints example" width="400"/>
   </div>
-- Best-effort inline decompilation of procedures.
+- Best-effort side-by-side decompilation of procedures.
   <div style="margin:1em">
-    <img src="assets/inline_decompilation.png" alt="Inline decompilation example" height="250" />
+    <img src="assets/decompilation.png" alt="Inline decompilation example" width="400"/>
   </div>
-- Diagnostics for inconsistent stack effects, uninitialized locals use, and unvalidated advice use.
+- Diagnostics for inconsistent stack effects, insufficient type validation, and invalid procedure signatures.
 
 ## Commands
 
 The extension provides the following commands (accessible via the Command Palette):
 
-| Command                             | Description                                       |
-| ----------------------------------- | ------------------------------------------------- |
-| `MASM: Restart Language Server`     | Restart the LSP server                            |
-| `MASM: Toggle Inline Decompilation` | Enable or disable inline procedure decompilation  |
-| `MASM: Toggle Inline Descriptions`  | Enable or disable inline instruction descriptions |
-| `MASM: Set Inline Hints Position`   | Set the column to align inline hints to           |
+| Command                               | Description                                                    |
+| ------------------------------------- | -------------------------------------------------------------- |
+| `MASM: Open Pseudocode in New Window` | Decompile the current file and open the result in a new window |
+| `MASM: Toggle Inline Decompilation`   | Enable or disable inline procedure decompilation               |
+| `MASM: Toggle Inline Descriptions`    | Enable or disable inline instruction descriptions              |
+| `MASM: Toggle Stack Effects`          | Enable or disable inline stack effect hints                    |
+| `MASM: Set Inline Hints Position`     | Set the column to align inline hints to                        |
+| `MASM: Restart Language Server`       | Restart the LSP server                                         |
 
 ## Requirements
 
