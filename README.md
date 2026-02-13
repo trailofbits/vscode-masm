@@ -7,18 +7,18 @@ VS Code LSP client for the Miden assembly language (MASM) powered by the [`masm-
 The extension provides:
 
 - Syntax highlighting for `.masm` files.
-- Goto symbol definitions and references.
+- Goto symbol definitions and find references.
 - Constant and procedure documentation on hover (including signatures).
   <div style="margin:1em">
-    <img src="assets/signatures.png" alt="Hover documentation example" width="200"/>
+    <img src="assets/signatures.png" alt="Hover documentation example" width="500"/>
   </div>
 - Inline descriptions for all MASM instructions.
   <div style="margin:1em">
-    <img src="assets/descriptions.png" alt="Inlay hints example" width="400"/>
+    <img src="assets/descriptions.png" alt="Inlay hints example" width="1000"/>
   </div>
 - Best-effort side-by-side decompilation of procedures.
   <div style="margin:1em">
-    <img src="assets/decompilation.png" alt="Inline decompilation example" width="400"/>
+    <img src="assets/decompilation.png" alt="Inline decompilation example" width="1000"/>
   </div>
 - Diagnostics for inconsistent stack effects, insufficient type validation, and invalid procedure signatures.
 
