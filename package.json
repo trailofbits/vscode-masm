@@ -21,7 +21,10 @@
     "onCommand:masm.toggleInlineDecompilation",
     "onCommand:masm.toggleInlineDescriptions",
     "onCommand:masm.setInlineHintsPosition",
-    "onCommand:masm.toggleStackEffects"
+    "onCommand:masm.toggleStackEffects",
+    "onCommand:masm.copyPseudocodeToClipboard",
+    "onCommand:masm.openPseudocodeInNewWindow",
+    "onCommand:masm.setStdlibRoot"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -92,6 +95,18 @@
       {
         "command": "masm.toggleStackEffects",
         "title": "MASM: Toggle Stack Effects"
+      },
+      {
+        "command": "masm.copyPseudocodeToClipboard",
+        "title": "MASM: Copy Pseudocode to Clipboard"
+      },
+      {
+        "command": "masm.openPseudocodeInNewWindow",
+        "title": "MASM: Open Pseudocode in New Window"
+      },
+      {
+        "command": "masm.setStdlibRoot",
+        "title": "MASM: Set Standard Library Path"
       }
     ],
     "languages": [
@@ -104,7 +119,18 @@
         "extensions": [
           ".masm"
         ],
-        "configuration": "./language-configuration.json"
+        "configuration": "./masm-language-configuration.json"
+      },
+      {
+        "id": "dmasm",
+        "aliases": [
+          "DMASM",
+          "dmasm"
+        ],
+        "extensions": [
+          ".dmasm"
+        ],
+        "configuration": "./dmasm-language-configuration.json"
       }
     ],
     "grammars": [
@@ -112,6 +138,11 @@
         "language": "masm",
         "scopeName": "source.masm",
         "path": "./syntaxes/masm.tmLanguage.json"
+      },
+      {
+        "language": "dmasm",
+        "scopeName": "source.dmasm",
+        "path": "./syntaxes/dmasm.tmLanguage.json"
       }
     ],
     "configuration": {

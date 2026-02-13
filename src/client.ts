@@ -175,7 +175,7 @@ export async function sendConfiguration(): Promise<void> {
   console.log(`[MASM] sendConfiguration: sending type=${hintType}, stackEffects=${stackEffectsEnabled}`);
 
   const settings = {
-    masm: {
+    "masm-lsp": {
       inlayHints: {
         type: hintType,
       },

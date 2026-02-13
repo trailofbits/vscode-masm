@@ -1,0 +1,312 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "DMASM",
+  "scopeName": "source.dmasm",
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#imports" },
+    { "include": "#procedures" },
+    { "include": "#control-flow" },
+    { "include": "#call-statements" },
+    { "include": "#builtins" },
+    { "include": "#storage-access" },
+    { "include": "#types" },
+    { "include": "#variables" },
+    { "include": "#booleans" },
+    { "include": "#constants" },
+    { "include": "#numbers" },
+    { "include": "#operators" },
+    { "include": "#punctuation" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.number-sign.dmasm",
+          "match": "#.*$"
+        }
+      ]
+    },
+    "imports": {
+      "patterns": [
+        {
+          "name": "meta.import.dmasm",
+          "match": "\\b(use)\\s+([a-zA-Z_][a-zA-Z0-9_]*(?:::[a-zA-Z_][a-zA-Z0-9_]*)*)",
+          "captures": {
+            "1": { "name": "keyword.control.import.dmasm" },
+            "2": { "name": "entity.name.namespace.dmasm" }
+          }
+        }
+      ]
+    },
+    "procedures": {
+      "patterns": [
+        {
+          "comment": "Procedure declaration: proc name(args) -> ReturnType {",
+          "name": "meta.procedure.dmasm",
+          "begin": "\\b(proc)\\s+([a-zA-Z_][a-zA-Z0-9_]*(?:::[a-zA-Z_][a-zA-Z0-9_]*)*)",
+          "beginCaptures": {
+            "1": { "name": "keyword.declaration.procedure.dmasm" },
+            "2": { "name": "entity.name.function.dmasm" }
+          },
+          "end": "\\{",
+          "endCaptures": {
+            "0": { "name": "punctuation.definition.block.dmasm" }
+          },
+          "patterns": [
+            { "include": "#proc-signature" }
+          ]
+        }
+      ]
+    },
+    "proc-signature": {
+      "patterns": [
+        {
+          "name": "meta.parameters.dmasm",
+          "begin": "\\(",
+          "beginCaptures": {
+            "0": { "name": "punctuation.brackets.round.dmasm" }
+          },
+          "end": "\\)",
+          "endCaptures": {
+            "0": { "name": "punctuation.brackets.round.dmasm" }
+          },
+          "patterns": [
+            {
+              "comment": "Parameter with type: v_0: Felt",
+              "match": "(v_\\w+)\\s*(:)\\s*(Felt|Bool|U32|Address)",
+              "captures": {
+                "1": { "name": "variable.parameter.dmasm" },
+                "2": { "name": "punctuation.separator.colon.dmasm" },
+                "3": { "name": "entity.name.type.dmasm" }
+              }
+            },
+            {
+              "name": "punctuation.separator.comma.dmasm",
+              "match": ","
+            }
+          ]
+        },
+        {
+          "name": "meta.return-type.dmasm",
+          "begin": "(->)",
+          "beginCaptures": {
+            "1": { "name": "keyword.operator.arrow.dmasm" }
+          },
+          "end": "(?=\\{)",
+          "patterns": [
+            {
+              "comment": "Parenthesized return types: -> (Felt, Bool)",
+              "begin": "\\(",
+              "beginCaptures": {
+                "0": { "name": "punctuation.brackets.round.dmasm" }
+              },
+              "end": "\\)",
+              "endCaptures": {
+                "0": { "name": "punctuation.brackets.round.dmasm" }
+              },
+              "patterns": [
+                {
+                  "name": "entity.name.type.dmasm",
+                  "match": "\\b(Felt|Bool|U32|Address)\\b"
+                },
+                {
+                  "name": "punctuation.separator.comma.dmasm",
+                  "match": ","
+                }
+              ]
+            },
+            {
+              "comment": "Single return type: -> Felt",
+              "name": "entity.name.type.dmasm",
+              "match": "\\b(Felt|Bool|U32|Address)\\b"
+            }
+          ]
+        }
+      ]
+    },
+    "control-flow": {
+      "patterns": [
+        {
+          "comment": "For loop: for i in 0..N",
+          "match": "\\b(for)\\s+(\\w+)\\s+(in)\\b",
+          "captures": {
+            "1": { "name": "keyword.control.loop.dmasm" },
+            "2": { "name": "variable.other.dmasm" },
+            "3": { "name": "keyword.control.loop.dmasm" }
+          }
+        },
+        {
+          "name": "keyword.control.conditional.dmasm",
+          "match": "\\b(if|else)\\b"
+        },
+        {
+          "name": "keyword.control.loop.dmasm",
+          "match": "\\b(while|loop)\\b"
+        },
+        {
+          "name": "keyword.control.return.dmasm",
+          "match": "\\breturn\\b"
+        }
+      ]
+    },
+    "call-statements": {
+      "patterns": [
+        {
+          "comment": "Call/exec/syscall with function name: call std::math::add(args)",
+          "match": "\\b(call|exec|syscall)\\s+([a-zA-Z_][a-zA-Z0-9_]*(?:::[a-zA-Z_][a-zA-Z0-9_]*)*)",
+          "captures": {
+            "1": { "name": "keyword.other.dmasm" },
+            "2": { "name": "entity.name.function.call.dmasm" }
+          }
+        }
+      ]
+    },
+    "builtins": {
+      "patterns": [
+        {
+          "comment": "Built-in functions: adv_load(), dyncall(), clz_u32(), etc.",
+          "name": "support.function.builtin.dmasm",
+          "match": "\\b(adv_load|adv_store|dyncall|locaddr|clz_u32|ctz_u32|clo_u32|cto_u32)\\b"
+        }
+      ]
+    },
+    "storage-access": {
+      "patterns": [
+        {
+          "comment": "Memory and local storage access: memory[addr], memory.be[addr], locals[idx], etc.",
+          "name": "support.variable.dmasm",
+          "match": "\\b(memory\\.be|memory\\.le|memory|locals\\.be|locals\\.le|locals)\\b"
+        }
+      ]
+    },
+    "types": {
+      "patterns": [
+        {
+          "name": "entity.name.type.dmasm",
+          "match": "\\b(Felt|Bool|U32|Address)\\b"
+        }
+      ]
+    },
+    "variables": {
+      "patterns": [
+        {
+          "comment": "Variable with complex subscript: v_(2*i + 1)",
+          "name": "variable.other.dmasm",
+          "match": "v_\\([^)]+\\)"
+        },
+        {
+          "comment": "Simple variable: v_0, v_i, v_42, v_0_1",
+          "name": "variable.other.dmasm",
+          "match": "\\bv_[a-zA-Z0-9_]+\\b"
+        }
+      ]
+    },
+    "booleans": {
+      "patterns": [
+        {
+          "name": "constant.language.boolean.dmasm",
+          "match": "\\b(true|false)\\b"
+        }
+      ]
+    },
+    "constants": {
+      "patterns": [
+        {
+          "comment": "Named constants: CONSTANT_NAME",
+          "name": "variable.other.constant.dmasm",
+          "match": "\\b[A-Z][A-Z0-9_]*\\b"
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.decimal.dmasm",
+          "match": "\\b[0-9]+\\b"
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "comment": "U32 symbol operators: +_u32, <<_u32, <=_u32, etc.",
+          "name": "keyword.operator.u32.dmasm",
+          "match": "(?:<<|>>|<=|>=|[+\\-*^<>])_u32"
+        },
+        {
+          "comment": "U32 word operators: and_u32, or_u32, xor_u32",
+          "name": "keyword.operator.u32.dmasm",
+          "match": "\\b(and_u32|or_u32|xor_u32)\\b"
+        },
+        {
+          "comment": "Logical word operators: and, or, xor",
+          "name": "keyword.operator.logical.dmasm",
+          "match": "\\b(and|or|xor)\\b"
+        },
+        {
+          "comment": "Namespace separator",
+          "name": "keyword.operator.namespace.dmasm",
+          "match": "::"
+        },
+        {
+          "comment": "Arrow operator",
+          "name": "keyword.operator.arrow.dmasm",
+          "match": "->"
+        },
+        {
+          "comment": "Range operator: 0..N",
+          "name": "keyword.operator.range.dmasm",
+          "match": "\\.\\."
+        },
+        {
+          "comment": "Comparison operators",
+          "name": "keyword.operator.comparison.dmasm",
+          "match": "==|!=|<=|>=|<|>"
+        },
+        {
+          "comment": "Assignment operator",
+          "name": "keyword.operator.assignment.dmasm",
+          "match": "="
+        },
+        {
+          "comment": "Arithmetic and unary operators",
+          "name": "keyword.operator.arithmetic.dmasm",
+          "match": "[+\\-*/^!]"
+        }
+      ]
+    },
+    "punctuation": {
+      "patterns": [
+        {
+          "name": "punctuation.brackets.round.dmasm",
+          "match": "[()]"
+        },
+        {
+          "name": "punctuation.brackets.square.dmasm",
+          "match": "[\\[\\]]"
+        },
+        {
+          "name": "punctuation.brackets.curly.dmasm",
+          "match": "[{}]"
+        },
+        {
+          "name": "punctuation.terminator.semicolon.dmasm",
+          "match": ";"
+        },
+        {
+          "name": "punctuation.separator.comma.dmasm",
+          "match": ","
+        },
+        {
+          "name": "punctuation.separator.colon.dmasm",
+          "match": ":"
+        },
+        {
+          "name": "punctuation.separator.question.dmasm",
+          "match": "\\?"
+        }
+      ]
+    }
+  }
+}
