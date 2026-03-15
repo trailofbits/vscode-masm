@@ -6,7 +6,7 @@ import {
   Trace,
 } from "vscode-languageclient/node";
 import { commandExists, cargoExists, installMasmLsp } from "./installation";
-import { resolveStdlibPath } from "./utils";
+import { resolveCorePath } from "./utils";
 
 let client: LanguageClient | undefined;
 
@@ -74,11 +74,11 @@ export async function startClient(
     }
   }
 
-  const stdlibPath = await resolveStdlibPath(context);
+  const corePath = await resolveCorePath(context);
 
   const serverOptions: ServerOptions = {
     command: serverCommand,
-    args: stdlibPath ? ["--stdlib-path", stdlibPath] : [],
+    args: corePath ? ["--core-path", corePath] : [],
     options: {
       env: process.env,
     },

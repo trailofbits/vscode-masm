@@ -57,6 +57,6 @@ The resulting `.vsix` file can be installed in VS Code via the "Extensions: Inst
 
 - `masm-lsp.serverPath`: absolute path or command name for the LSP binary (defaults to `masm-lsp`).
 - `masm-lsp.trace.server`: LSP trace level (`off`, `messages`, `verbose`).
-- `masm-lsp.stdlibPath`: path to the `miden-vm` repository containing the MASM stdlib. If omitted, the extension will try to infer it from the current workspace; if it cannot, it will prompt once. Leaving it blank lets the server auto-clone a temporary copy.
+- `masm-lsp.corePath`: Absolute path to the MASM core library in the 0xMiden/miden-vm repository. If empty, the extension will attempt to infer it from the workspace or prompt you. When omitted entirely, the server will auto-clone a copy.
 - `masm-lsp.inlayHints.position`: column to align inlay hints to. If 0, hints use minimum padding only. If the line extends past this column, minimum padding is used instead.
 - `masm-lsp.inlayHints.minimumPadding`: minimum number of spaces between source code and inlay hints.

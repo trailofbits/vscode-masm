@@ -59,18 +59,18 @@ export function inferMidenVmRootFromWorkspace(): string | undefined {
 }
 
 /**
- * Resolve the stdlib path from settings, cache, or user input.
+ * Resolve the core library path from settings, cache, or user input.
  */
-export async function resolveStdlibPath(
+export async function resolveCorePath(
   context: vscode.ExtensionContext
 ): Promise<string | undefined> {
   const config = vscode.workspace.getConfiguration("masm-lsp");
-  const fromSettings = config.get<string>("stdlibPath");
+  const fromSettings = config.get<string>("corePath");
   if (fromSettings && fromSettings.trim().length > 0) {
     return expandPath(fromSettings.trim());
   }
 
-  const cached = context.globalState.get<string>("masmStdlibPath");
+  const cached = context.globalState.get<string>("masmCorePath");
   if (cached && cached.trim().length > 0) {
     return expandPath(cached.trim());
   }
@@ -81,10 +81,10 @@ export async function resolveStdlibPath(
   }
 
   const entered = await vscode.window.showInputBox({
-    title: "Miden stdlib location",
+    title: "Miden core library location",
     prompt:
-      "Enter the path to the miden-vm repository, or leave blank for an extension managed location.",
-    placeHolder: "Path to the miden-vm repository",
+      "Enter the path to the miden-vm repository, crates/lib/core, or crates/lib/core/asm, or leave blank for the server-managed core library.",
+    placeHolder: "Path to the miden-vm repository or core library",
     ignoreFocusOut: true,
     validateInput: (val) => {
       if (!val.trim()) return null;
@@ -95,7 +95,7 @@ export async function resolveStdlibPath(
 
   if (entered && entered.trim().length > 0) {
     const resolved = expandPath(entered.trim());
-    await context.globalState.update("masmStdlibPath", resolved);
+    await context.globalState.update("masmCorePath", resolved);
     return resolved;
   }
 

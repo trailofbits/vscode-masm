@@ -4,23 +4,23 @@ import { execSync } from "child_process";
 import { runTests } from "@vscode/test-electron";
 
 const MIDEN_VM_REPO = "https://github.com/0xPolygonMiden/miden-vm.git";
-const TEMP_STDLIB_PATH = "/tmp/masm-lsp-test-stdlib";
+const TEMP_CORE_PATH = "/tmp/masm-lsp-test-core";
 
 function cloneMidenVm(): void {
-  if (fs.existsSync(TEMP_STDLIB_PATH)) {
-    console.log(`Removing existing ${TEMP_STDLIB_PATH}`);
-    fs.rmSync(TEMP_STDLIB_PATH, { recursive: true, force: true });
+  if (fs.existsSync(TEMP_CORE_PATH)) {
+    console.log(`Removing existing ${TEMP_CORE_PATH}`);
+    fs.rmSync(TEMP_CORE_PATH, { recursive: true, force: true });
   }
-  console.log(`Cloning miden-vm to ${TEMP_STDLIB_PATH}`);
-  execSync(`git clone --depth 1 ${MIDEN_VM_REPO} ${TEMP_STDLIB_PATH}`, {
+  console.log(`Cloning miden-vm to ${TEMP_CORE_PATH}`);
+  execSync(`git clone --depth 1 ${MIDEN_VM_REPO} ${TEMP_CORE_PATH}`, {
     stdio: "inherit",
   });
 }
 
 function cleanupMidenVm(): void {
-  if (fs.existsSync(TEMP_STDLIB_PATH)) {
-    console.log(`Cleaning up ${TEMP_STDLIB_PATH}`);
-    fs.rmSync(TEMP_STDLIB_PATH, { recursive: true, force: true });
+  if (fs.existsSync(TEMP_CORE_PATH)) {
+    console.log(`Cleaning up ${TEMP_CORE_PATH}`);
+    fs.rmSync(TEMP_CORE_PATH, { recursive: true, force: true });
   }
 }
 
@@ -47,7 +47,7 @@ async function main() {
       extensionTestsPath,
       launchArgs: [testWorkspace, "--disable-extensions"],
       extensionTestsEnv: {
-        MASM_LSP_TEST_STDLIB_PATH: TEMP_STDLIB_PATH,
+        MASM_LSP_TEST_CORE_PATH: TEMP_CORE_PATH,
       },
     });
   } catch (err) {

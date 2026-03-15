@@ -193,7 +193,7 @@ export function registerCommands(
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("masm.setStdlibRoot", async () => {
+    vscode.commands.registerCommand("masm.setCorePath", async () => {
       const client = getClient();
       if (!client) {
         vscode.window.showWarningMessage("Language server not running");
@@ -201,11 +201,12 @@ export function registerCommands(
       }
 
       const config = vscode.workspace.getConfiguration("masm-lsp");
-      const currentPath = config.get<string>("stdlibPath", "");
+      const currentPath = config.get<string>("corePath", "");
 
       const input = await vscode.window.showInputBox({
-        title: "Set Standard Library Path",
-        prompt: "Enter the path to the miden-vm repository.",
+        title: "Set Core Library Path",
+        prompt:
+          "Enter the path to the miden-vm repository, crates/lib/core, or crates/lib/core/asm.",
         value: currentPath,
         validateInput: (val) => {
           if (!val.trim()) return null;
@@ -219,17 +220,17 @@ export function registerCommands(
 
       if (input === undefined) return;
 
-      const stdlibPath = input.trim() || undefined;
+      const corePath = input.trim() || undefined;
 
-      if (stdlibPath) {
-        const resolved = expandPath(stdlibPath);
+      if (corePath) {
+        const resolved = expandPath(corePath);
         await client.sendRequest("workspace/executeCommand", {
-          command: "masm-lsp.setStdlibRoot",
+          command: "masm-lsp.setCorePath",
           arguments: [resolved],
         });
 
-        await config.update("stdlibPath", resolved, vscode.ConfigurationTarget.Global);
-        vscode.window.showInformationMessage(`Standard library path set to ${resolved}`);
+        await config.update("corePath", resolved, vscode.ConfigurationTarget.Global);
+        vscode.window.showInformationMessage(`Core library path set to ${resolved}`);
       }
     })
   );

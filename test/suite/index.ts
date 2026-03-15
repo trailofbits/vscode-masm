@@ -4,11 +4,11 @@ import Mocha from "mocha";
 import { glob } from "glob";
 
 export async function run(): Promise<void> {
-  // Configure masm-lsp to use the test stdlib path from environment
-  const stdlibPath = process.env.MASM_LSP_TEST_STDLIB_PATH;
-  if (stdlibPath) {
+  // Configure masm-lsp to use the test core library path from environment
+  const corePath = process.env.MASM_LSP_TEST_CORE_PATH;
+  if (corePath) {
     const config = vscode.workspace.getConfiguration("masm-lsp");
-    await config.update("stdlibPath", stdlibPath, vscode.ConfigurationTarget.Global);
+    await config.update("corePath", corePath, vscode.ConfigurationTarget.Global);
   }
 
   // Create the mocha test

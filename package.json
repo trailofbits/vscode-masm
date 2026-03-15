@@ -24,7 +24,7 @@
     "onCommand:masm.toggleStackEffects",
     "onCommand:masm.copyPseudocodeToClipboard",
     "onCommand:masm.openPseudocodeInNewWindow",
-    "onCommand:masm.setStdlibRoot"
+    "onCommand:masm.setCorePath"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -105,8 +105,8 @@
         "title": "MASM: Open Pseudocode in New Window"
       },
       {
-        "command": "masm.setStdlibRoot",
-        "title": "MASM: Set Standard Library Path"
+        "command": "masm.setCorePath",
+        "title": "MASM: Set Core Library Path"
       }
     ],
     "languages": [
@@ -163,10 +163,10 @@
           "default": "off",
           "description": "LSP server trace level."
         },
-        "masm-lsp.stdlibPath": {
+        "masm-lsp.corePath": {
           "type": "string",
           "default": "",
-          "description": "Absolute path to the miden-vm repository containing the MASM stdlib. If empty, the extension will attempt to infer it from the workspace or prompt you. When omitted entirely, the server will auto-clone a copy."
+          "description": "Absolute path to the MASM core library in the 0xMiden/miden-vm repository. If empty, the extension will attempt to infer it from the workspace or prompt you. When omitted entirely, the server will auto-clone a copy."
         },
         "masm-lsp.inlayHints.position": {
           "type": "number",
