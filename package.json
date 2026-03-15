@@ -236,5 +236,10 @@
   },
   "dependencies": {
     "vscode-languageclient": "^9.0.1"
+  },
+  "overrides": {
+    "diff": "^8.0.3",
+    "serialize-javascript": "^7.0.3",
+    "yauzl": "^3.2.1"
   }
 }
