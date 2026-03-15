@@ -172,7 +172,10 @@ export async function sendConfiguration(): Promise<void> {
   const config = vscode.workspace.getConfiguration("masm-lsp");
   const hintType = config.get<string>("inlayHints.type", "none");
   const stackEffectsEnabled = config.get<boolean>("codeLens.stackEffects", true);
-  console.log(`[MASM] sendConfiguration: sending type=${hintType}, stackEffects=${stackEffectsEnabled}`);
+  const expressionPropagationEnabled = config.get<boolean>("decompilation.expressionPropagation", true);
+  const deadCodeEliminationEnabled = config.get<boolean>("decompilation.deadCodeElimination", true);
+  const simplificationEnabled = config.get<boolean>("decompilation.simplification", true);
+  console.log(`[MASM] sendConfiguration: sending type=${hintType}, stackEffects=${stackEffectsEnabled}, decompilation={exprProp=${expressionPropagationEnabled}, dce=${deadCodeEliminationEnabled}, simplify=${simplificationEnabled}}`);
 
   const settings = {
     "masm-lsp": {
@@ -181,6 +184,11 @@ export async function sendConfiguration(): Promise<void> {
       },
       codeLens: {
         stackEffects: stackEffectsEnabled,
+      },
+      decompilation: {
+        expressionPropagation: expressionPropagationEnabled,
+        deadCodeElimination: deadCodeEliminationEnabled,
+        simplification: simplificationEnabled,
       },
     },
   };

@@ -6,8 +6,8 @@
   },
   "displayName": "MASM",
   "description": "VS Code support for the Miden assembly language (MASM) powered by the masm-lsp language server.",
-  "version": "0.0.1",
-  "publisher": "miden",
+  "version": "0.4.0",
+  "publisher": "Trail of Bits",
   "license": "MIT",
   "engines": {
     "vscode": "^1.85.0"
@@ -194,6 +194,21 @@
           "type": "boolean",
           "default": true,
           "description": "Show stack effects as code lenses above instructions."
+        },
+        "masm-lsp.decompilation.expressionPropagation": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable expression propagation during decompilation."
+        },
+        "masm-lsp.decompilation.deadCodeElimination": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable dead code elimination during decompilation."
+        },
+        "masm-lsp.decompilation.simplification": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable simplification during decompilation."
         }
       }
     }
