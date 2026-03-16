@@ -1,245 +1,245 @@
 {
-  "name": "vscode-masm",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/trailofbits/vscode-masm.git"
-  },
-  "displayName": "MASM",
-  "description": "VS Code support for the Miden assembly language (MASM) powered by the masm-lsp language server.",
-  "version": "0.4.0",
-  "publisher": "Trail of Bits",
-  "license": "MIT",
-  "engines": {
-    "vscode": "^1.85.0"
-  },
-  "categories": [
-    "Programming Languages"
-  ],
-  "activationEvents": [
-    "onLanguage:masm",
-    "onCommand:masm.restartServer",
-    "onCommand:masm.toggleInlineDecompilation",
-    "onCommand:masm.toggleInlineDescriptions",
-    "onCommand:masm.setInlineHintsPosition",
-    "onCommand:masm.toggleStackEffects",
-    "onCommand:masm.copyPseudocodeToClipboard",
-    "onCommand:masm.openPseudocodeInNewWindow",
-    "onCommand:masm.setCorePath"
-  ],
-  "main": "./out/extension.js",
-  "contributes": {
-    "semanticTokenScopes": [
-      {
-        "language": "masm",
-        "scopes": {
-          "comment": [
-            "comment.line.masm"
-          ],
-          "comment.documentation": [
-            "comment.block.documentation.masm"
-          ],
-          "keyword": [
-            "keyword.control.masm",
-            "keyword.other.masm"
-          ],
-          "namespace": [
-            "entity.name.namespace.masm"
-          ],
-          "variable.readonly": [
-            "variable.other.constant.masm"
-          ],
-          "function": [
-            "entity.name.function.masm"
-          ],
-          "method": [
-            "entity.name.function.method.masm"
-          ],
-          "decorator": [
-            "entity.name.function.decorator.masm"
-          ],
-          "property": [
-            "variable.other.property.masm"
-          ],
-          "string": [
-            "string.quoted.double.masm"
-          ],
-          "number": [
-            "constant.numeric.masm"
-          ],
-          "operator": [
-            "keyword.operator.masm"
-          ],
-          "punctuation": [
-            "punctuation.masm"
-          ]
+    "name": "vscode-masm",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/trailofbits/vscode-masm.git"
+    },
+    "displayName": "MASM",
+    "description": "VS Code support for the Miden assembly language (MASM) powered by the masm-lsp language server.",
+    "version": "0.5.0",
+    "publisher": "Trail of Bits",
+    "license": "MIT",
+    "engines": {
+        "vscode": "^1.85.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "activationEvents": [
+        "onLanguage:masm",
+        "onCommand:masm.restartServer",
+        "onCommand:masm.toggleInlineDecompilation",
+        "onCommand:masm.toggleInlineDescriptions",
+        "onCommand:masm.setInlineHintsPosition",
+        "onCommand:masm.toggleStackEffects",
+        "onCommand:masm.copyPseudocodeToClipboard",
+        "onCommand:masm.openPseudocodeInNewWindow",
+        "onCommand:masm.setCorePath"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "semanticTokenScopes": [
+            {
+                "language": "masm",
+                "scopes": {
+                    "comment": [
+                        "comment.line.masm"
+                    ],
+                    "comment.documentation": [
+                        "comment.block.documentation.masm"
+                    ],
+                    "keyword": [
+                        "keyword.control.masm",
+                        "keyword.other.masm"
+                    ],
+                    "namespace": [
+                        "entity.name.namespace.masm"
+                    ],
+                    "variable.readonly": [
+                        "variable.other.constant.masm"
+                    ],
+                    "function": [
+                        "entity.name.function.masm"
+                    ],
+                    "method": [
+                        "entity.name.function.method.masm"
+                    ],
+                    "decorator": [
+                        "entity.name.function.decorator.masm"
+                    ],
+                    "property": [
+                        "variable.other.property.masm"
+                    ],
+                    "string": [
+                        "string.quoted.double.masm"
+                    ],
+                    "number": [
+                        "constant.numeric.masm"
+                    ],
+                    "operator": [
+                        "keyword.operator.masm"
+                    ],
+                    "punctuation": [
+                        "punctuation.masm"
+                    ]
+                }
+            }
+        ],
+        "commands": [
+            {
+                "command": "masm.restartServer",
+                "title": "MASM: Restart Language Server"
+            },
+            {
+                "command": "masm.toggleInlineDecompilation",
+                "title": "MASM: Toggle Inline Decompilation"
+            },
+            {
+                "command": "masm.toggleInlineDescriptions",
+                "title": "MASM: Toggle Inline Descriptions"
+            },
+            {
+                "command": "masm.setInlineHintsPosition",
+                "title": "MASM: Set Inline Hints Position"
+            },
+            {
+                "command": "masm.toggleStackEffects",
+                "title": "MASM: Toggle Stack Effects"
+            },
+            {
+                "command": "masm.copyPseudocodeToClipboard",
+                "title": "MASM: Copy Pseudocode to Clipboard"
+            },
+            {
+                "command": "masm.openPseudocodeInNewWindow",
+                "title": "MASM: Open Pseudocode in New Window"
+            },
+            {
+                "command": "masm.setCorePath",
+                "title": "MASM: Set Core Library Path"
+            }
+        ],
+        "languages": [
+            {
+                "id": "masm",
+                "aliases": [
+                    "MASM",
+                    "masm"
+                ],
+                "extensions": [
+                    ".masm"
+                ],
+                "configuration": "./masm-language-configuration.json"
+            },
+            {
+                "id": "dmasm",
+                "aliases": [
+                    "DMASM",
+                    "dmasm"
+                ],
+                "extensions": [
+                    ".dmasm"
+                ],
+                "configuration": "./dmasm-language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "masm",
+                "scopeName": "source.masm",
+                "path": "./syntaxes/masm.tmLanguage.json"
+            },
+            {
+                "language": "dmasm",
+                "scopeName": "source.dmasm",
+                "path": "./syntaxes/dmasm.tmLanguage.json"
+            }
+        ],
+        "configuration": {
+            "title": "MASM",
+            "properties": {
+                "masm-lsp.serverPath": {
+                    "type": "string",
+                    "default": "masm-lsp",
+                    "description": "Path to the masm-lsp binary. Defaults to searching in PATH."
+                },
+                "masm-lsp.trace.server": {
+                    "type": "string",
+                    "enum": [
+                        "off",
+                        "messages",
+                        "verbose"
+                    ],
+                    "default": "off",
+                    "description": "LSP server trace level."
+                },
+                "masm-lsp.corePath": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Absolute path to the MASM core library in the 0xMiden/miden-vm repository. If empty, the extension will attempt to infer it from the workspace or prompt you. When omitted entirely, the server will auto-clone a copy."
+                },
+                "masm-lsp.inlayHints.position": {
+                    "type": "number",
+                    "default": 40,
+                    "minimum": 0,
+                    "description": "Column to align inlay hints to. If 0, hints use minimum padding only. If the line extends past this column, minimum padding is used instead."
+                },
+                "masm-lsp.inlayHints.minimumPadding": {
+                    "type": "number",
+                    "default": 2,
+                    "minimum": 0,
+                    "description": "Minimum number of spaces between source code and inlay hints."
+                },
+                "masm-lsp.inlayHints.type": {
+                    "type": "string",
+                    "enum": [
+                        "decompilation",
+                        "description",
+                        "none"
+                    ],
+                    "default": "none",
+                    "description": "Type of inlay hints to show: decompilation, description, or none."
+                },
+                "masm-lsp.codeLens.stackEffects": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Show stack effects as code lenses above instructions."
+                },
+                "masm-lsp.decompilation.expressionPropagation": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable expression propagation during decompilation."
+                },
+                "masm-lsp.decompilation.deadCodeElimination": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable dead code elimination during decompilation."
+                },
+                "masm-lsp.decompilation.simplification": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable simplification during decompilation."
+                }
+            }
         }
-      }
-    ],
-    "commands": [
-      {
-        "command": "masm.restartServer",
-        "title": "MASM: Restart Language Server"
-      },
-      {
-        "command": "masm.toggleInlineDecompilation",
-        "title": "MASM: Toggle Inline Decompilation"
-      },
-      {
-        "command": "masm.toggleInlineDescriptions",
-        "title": "MASM: Toggle Inline Descriptions"
-      },
-      {
-        "command": "masm.setInlineHintsPosition",
-        "title": "MASM: Set Inline Hints Position"
-      },
-      {
-        "command": "masm.toggleStackEffects",
-        "title": "MASM: Toggle Stack Effects"
-      },
-      {
-        "command": "masm.copyPseudocodeToClipboard",
-        "title": "MASM: Copy Pseudocode to Clipboard"
-      },
-      {
-        "command": "masm.openPseudocodeInNewWindow",
-        "title": "MASM: Open Pseudocode in New Window"
-      },
-      {
-        "command": "masm.setCorePath",
-        "title": "MASM: Set Core Library Path"
-      }
-    ],
-    "languages": [
-      {
-        "id": "masm",
-        "aliases": [
-          "MASM",
-          "masm"
-        ],
-        "extensions": [
-          ".masm"
-        ],
-        "configuration": "./masm-language-configuration.json"
-      },
-      {
-        "id": "dmasm",
-        "aliases": [
-          "DMASM",
-          "dmasm"
-        ],
-        "extensions": [
-          ".dmasm"
-        ],
-        "configuration": "./dmasm-language-configuration.json"
-      }
-    ],
-    "grammars": [
-      {
-        "language": "masm",
-        "scopeName": "source.masm",
-        "path": "./syntaxes/masm.tmLanguage.json"
-      },
-      {
-        "language": "dmasm",
-        "scopeName": "source.dmasm",
-        "path": "./syntaxes/dmasm.tmLanguage.json"
-      }
-    ],
-    "configuration": {
-      "title": "MASM",
-      "properties": {
-        "masm-lsp.serverPath": {
-          "type": "string",
-          "default": "masm-lsp",
-          "description": "Path to the masm-lsp binary. Defaults to searching in PATH."
-        },
-        "masm-lsp.trace.server": {
-          "type": "string",
-          "enum": [
-            "off",
-            "messages",
-            "verbose"
-          ],
-          "default": "off",
-          "description": "LSP server trace level."
-        },
-        "masm-lsp.corePath": {
-          "type": "string",
-          "default": "",
-          "description": "Absolute path to the MASM core library in the 0xMiden/miden-vm repository. If empty, the extension will attempt to infer it from the workspace or prompt you. When omitted entirely, the server will auto-clone a copy."
-        },
-        "masm-lsp.inlayHints.position": {
-          "type": "number",
-          "default": 40,
-          "minimum": 0,
-          "description": "Column to align inlay hints to. If 0, hints use minimum padding only. If the line extends past this column, minimum padding is used instead."
-        },
-        "masm-lsp.inlayHints.minimumPadding": {
-          "type": "number",
-          "default": 2,
-          "minimum": 0,
-          "description": "Minimum number of spaces between source code and inlay hints."
-        },
-        "masm-lsp.inlayHints.type": {
-          "type": "string",
-          "enum": [
-            "decompilation",
-            "description",
-            "none"
-          ],
-          "default": "none",
-          "description": "Type of inlay hints to show: decompilation, description, or none."
-        },
-        "masm-lsp.codeLens.stackEffects": {
-          "type": "boolean",
-          "default": true,
-          "description": "Show stack effects as code lenses above instructions."
-        },
-        "masm-lsp.decompilation.expressionPropagation": {
-          "type": "boolean",
-          "default": true,
-          "description": "Enable expression propagation during decompilation."
-        },
-        "masm-lsp.decompilation.deadCodeElimination": {
-          "type": "boolean",
-          "default": true,
-          "description": "Enable dead code elimination during decompilation."
-        },
-        "masm-lsp.decompilation.simplification": {
-          "type": "boolean",
-          "default": true,
-          "description": "Enable simplification during decompilation."
-        }
-      }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "compile:test": "tsc -p ./test/",
+        "watch": "tsc -watch -p ./",
+        "pretest": "npm run compile && npm run compile:test",
+        "test": "node ./out/test/runTest.js",
+        "lint": "echo \"No lint configured\"",
+        "package": "vsce package"
+    },
+    "devDependencies": {
+        "@vscode/vsce": "^3.2.1",
+        "@types/glob": "^9.0.0",
+        "@types/mocha": "^10.0.10",
+        "@types/node": "^20.12.11",
+        "@types/vscode": "^1.85.0",
+        "@vscode/test-electron": "^2.5.2",
+        "glob": "^13.0.0",
+        "mocha": "^11.7.5",
+        "typescript": "^5.5.4"
+    },
+    "dependencies": {
+        "vscode-languageclient": "^9.0.1"
+    },
+    "overrides": {
+        "diff": "^8.0.3",
+        "serialize-javascript": "^7.0.3",
+        "yauzl": "^3.2.1"
     }
-  },
-  "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "compile:test": "tsc -p ./test/",
-    "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run compile:test",
-    "test": "node ./out/test/runTest.js",
-    "lint": "echo \"No lint configured\"",
-    "package": "vsce package"
-  },
-  "devDependencies": {
-    "@vscode/vsce": "^3.2.1",
-    "@types/glob": "^9.0.0",
-    "@types/mocha": "^10.0.10",
-    "@types/node": "^20.12.11",
-    "@types/vscode": "^1.85.0",
-    "@vscode/test-electron": "^2.5.2",
-    "glob": "^13.0.0",
-    "mocha": "^11.7.5",
-    "typescript": "^5.5.4"
-  },
-  "dependencies": {
-    "vscode-languageclient": "^9.0.1"
-  },
-  "overrides": {
-    "diff": "^8.0.3",
-    "serialize-javascript": "^7.0.3",
-    "yauzl": "^3.2.1"
-  }
 }
