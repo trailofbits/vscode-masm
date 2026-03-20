@@ -85,7 +85,11 @@ export async function startClient(
   };
 
   const clientOptions: LanguageClientOptions = {
-    documentSelector: [{ scheme: "file", language: "masm" }],
+    documentSelector: [
+      { scheme: "file", language: "masm" },
+      { scheme: "file", language: "dmasm" },
+      { scheme: "untitled", language: "dmasm" },
+    ],
     outputChannel,
     traceOutputChannel: outputChannel,
     synchronize: {
