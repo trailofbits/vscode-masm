@@ -6,7 +6,7 @@
     },
     "displayName": "MASM",
     "description": "VS Code support for the Miden assembly language (MASM) powered by the masm-lsp language server.",
-    "version": "0.6.0",
+    "version": "0.6.1",
     "publisher": "trailofbits",
     "license": "MIT",
     "engines": {

@@ -1,10 +1,13 @@
 .git/**
 .gitignore
+.claude/**
+.vscode/**
+.vscode-test/**
 tsconfig.json
+package-lock.json
 src/**
-**/*.map
-*.vsix
 test/**
 tests/**
-README.md
-node_modules/web-tree-sitter/test/**
+**/*.map
+**/*.ts
+*.vsix

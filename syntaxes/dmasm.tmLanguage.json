@@ -16,7 +16,8 @@
     { "include": "#constants" },
     { "include": "#numbers" },
     { "include": "#operators" },
-    { "include": "#punctuation" }
+    { "include": "#punctuation" },
+    { "include": "#identifiers" }
   ],
   "repository": {
     "comments": {
@@ -73,8 +74,8 @@
           },
           "patterns": [
             {
-              "comment": "Parameter with type: v_0: Felt",
-              "match": "(v_\\w+)\\s*(:)\\s*(Felt|Bool|U32|Address)",
+              "comment": "Parameter with type: v_0: Felt or foo: Felt",
+              "match": "([a-zA-Z_]\\w*)\\s*(:)\\s*(Felt|Bool|U32|Address)",
               "captures": {
                 "1": { "name": "variable.parameter.dmasm" },
                 "2": { "name": "punctuation.separator.colon.dmasm" },
@@ -305,6 +306,15 @@
         {
           "name": "punctuation.separator.question.dmasm",
           "match": "\\?"
+        }
+      ]
+    },
+    "identifiers": {
+      "patterns": [
+        {
+          "comment": "General identifier - catches renamed variables not matched by v_ prefix rules",
+          "name": "variable.other.dmasm",
+          "match": "\\b[a-z_][a-zA-Z0-9_]*\\b"
         }
       ]
     }
